@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("KickOffAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+46b31a267a80bf4aceca08b58bc54820ef1d517a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cc3da7bec40932f80f8623cfc051c3a0fcb0ca05")]
 [assembly: System.Reflection.AssemblyProductAttribute("KickOffAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("KickOffAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
