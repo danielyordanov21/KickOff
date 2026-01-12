@@ -1,0 +1,54 @@
+div#header {
+    width: 100vw;
+    height: 12vh;
+
+    background-color: rgb(7, 44, 45);
+    opacity: 0.4;
+    
+    box-shadow: 0 1vh 2vh 0 rgba(0, 0, 0, 0.05), 0 1.5vh 2vh 0 rgba(0, 0, 0, 0.01);
+
+    div {
+        height: 100%;
+    }
+
+    div#header-left {
+        width: fit-content;
+        max-width: 40vw;
+        padding-right: 10vw;
+
+        align-content: center;
+        justify-content: space-evenly;
+        text-align: center;
+
+        text-overflow: clip;
+
+        a#home-wrapper {
+            width: fit-content;
+            height: fit-content;
+        }
+    }
+
+    div#header-right {
+        flex-direction: row-reverse;
+
+        align-items: center;
+        text-align: center;
+
+        width: fit-content;
+
+        pfp {
+            height: 60%;
+            padding: 20% 10% 20% 10%;
+            aspect-ratio: 1 / 1;
+        }
+
+        button#my-projects-Btn {
+            height: 40%;
+            width: 10em;
+
+            text-align: center;
+            align-items: center;
+        }
+    }
+
+}

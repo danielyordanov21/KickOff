@@ -1,0 +1,11 @@
+button#pfp-settings-Btn {
+    width: 90%;
+    height: 90%;
+    border-radius: 100%;
+
+    :nth-child {
+        width: inherit;
+        height: inherit;
+        border-radius: inherit;
+    }
+}
