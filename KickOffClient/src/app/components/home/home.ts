@@ -6,7 +6,6 @@ import { Header } from '../shared/header/header';
   templateUrl: './home.html',
   styleUrl: './home.scss',
   imports: [
-    Header
   ],
 })
 export class Home {
