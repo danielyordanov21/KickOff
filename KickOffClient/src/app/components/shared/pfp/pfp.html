@@ -1,8 +1,8 @@
-<button id="pfp-settings-Btn" [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+<button id="pfp-settings-Btn" [matMenuTriggerFor]="pfpMenu" aria-label="Example icon-button with a menu">
     <mat-icon>person</mat-icon>
 </button>
 
-<mat-menu #menu="matMenu">
+<mat-menu #pfpMenu="matMenu">
     <button mat-menu-item>
         <mat-icon>person</mat-icon>
         <span>Profile</span>
@@ -15,7 +15,7 @@
 
     <button mat-menu-item>
         <mat-icon>settings</mat-icon>
-        <<span>Settings</span>>
+        <span>Settings</span>
     </button>
 
     <mat-divider></mat-divider>
