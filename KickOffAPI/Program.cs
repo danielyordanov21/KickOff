@@ -16,10 +16,14 @@ builder.Services.AddDbContext<ProjectDbContext>(options =>
         b => b.MigrationsHistoryTable("__ProjectMigrationsHistory")
     ));
     
-// Sevices
+// Services
 builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers();
+
+builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<ProjectRepository>();
 
 var app = builder.Build();
 
