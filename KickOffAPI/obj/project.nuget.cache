@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "h55shQrRe80=",
+  "dgSpecHash": "Z1Y3Ul5Sc6Q=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Daniel\\Documents\\Projects\\KickOff\\KickOffAPI\\KickOffAPI.csproj",
+  "projectFilePath": "C:\\Users\\Daniel\\Documents\\Projects\\KickOff\\kickoffapi\\KickOffAPI.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Daniel\\.nuget\\packages\\azure.core\\1.47.1\\azure.core.1.47.1.nupkg.sha512",
     "C:\\Users\\Daniel\\.nuget\\packages\\azure.identity\\1.14.2\\azure.identity.1.14.2.nupkg.sha512",

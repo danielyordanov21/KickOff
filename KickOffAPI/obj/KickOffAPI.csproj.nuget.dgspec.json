@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Daniel\\Documents\\Projects\\KickOff\\KickOffAPI\\KickOffAPI.csproj": {}
+    "C:\\Users\\Daniel\\Documents\\Projects\\KickOff\\kickoffapi\\KickOffAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Daniel\\Documents\\Projects\\KickOff\\KickOffAPI\\KickOffAPI.csproj": {
+    "C:\\Users\\Daniel\\Documents\\Projects\\KickOff\\kickoffapi\\KickOffAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Daniel\\Documents\\Projects\\KickOff\\KickOffAPI\\KickOffAPI.csproj",
+        "projectUniqueName": "C:\\Users\\Daniel\\Documents\\Projects\\KickOff\\kickoffapi\\KickOffAPI.csproj",
         "projectName": "KickOffAPI",
-        "projectPath": "C:\\Users\\Daniel\\Documents\\Projects\\KickOff\\KickOffAPI\\KickOffAPI.csproj",
+        "projectPath": "C:\\Users\\Daniel\\Documents\\Projects\\KickOff\\kickoffapi\\KickOffAPI.csproj",
         "packagesPath": "C:\\Users\\Daniel\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Daniel\\Documents\\Projects\\KickOff\\KickOffAPI\\obj\\",
+        "outputPath": "C:\\Users\\Daniel\\Documents\\Projects\\KickOff\\kickoffapi\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

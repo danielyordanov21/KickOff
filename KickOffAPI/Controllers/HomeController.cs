@@ -5,5 +5,5 @@ using Microsoft.AspNetCore.Mvc;
 public class HomeController : ControllerBase
 {
     [HttpGet]
-    public IActionResult Get() => Ok(new { message = "Hello, world!" });
+    public IActionResult Get() => Ok(new { message = "connected to API" });
 }

@@ -3,8 +3,9 @@ div#header {
     height: 12vh;
     z-index: 10;
 
+    border-radius: 0 0 0.65vw 0.65vw;
+
     background-color: rgb(7, 44, 45);
-    opacity: 0.4;
     
     box-shadow: 0 1vh 2vh 0 rgba(0, 0, 0, 0.05), 0 1.5vh 2vh 0 rgba(0, 0, 0, 0.01);
 
