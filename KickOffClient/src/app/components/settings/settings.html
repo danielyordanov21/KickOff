@@ -1,1 +1,23 @@
-<p>settings works!</p>
+<div class="settings-layout">
+    <section id="settings-names">
+        <div *ngFor="let group of groupedSettings() | keyvalue" [class.selected-group]="selectedGroup() === group.key">
+            <div class="setting-name">
+                <h4 (click)="selectedGroup.set(selectedGroup() === group.key ? null : group.key)">{{ group.key }}</h4>
+                <div *ngFor="let setting of group.value">
+                    {{ setting.Name }}
+                </div>
+            </div>
+            <hr class="divider" />
+        </div>
+    </section>
+    <main>
+        <section class="settings-container">
+            <div class="setting-item" *ngFor="let setting of filteredSettings()">
+                <h3>{{ setting.Name }}</h3>
+                <p *ngIf="setting.Description">{{ setting.Description }}</p>
+                <p *ngIf="setting.HoverText" class="hover-text">{{ setting.HoverText }}</p>
+                <p>Value: {{ setting.Value }}</p>
+            </div>
+        </section>
+    </main>
+</div>
