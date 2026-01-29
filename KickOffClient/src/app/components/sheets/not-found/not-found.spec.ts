@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AccountView } from './account-view';
+import { NotFound } from './not-found';
 
-describe('AccountView', () => {
-  let component: AccountView;
-  let fixture: ComponentFixture<AccountView>;
+describe('NotFound', () => {
+  let component: NotFound;
+  let fixture: ComponentFixture<NotFound>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AccountView]
+      imports: [NotFound]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(AccountView);
+    fixture = TestBed.createComponent(NotFound);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

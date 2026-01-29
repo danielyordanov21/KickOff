@@ -1,8 +1,8 @@
 import { Component, input, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { SettingModel } from '../../models/settings.model';
-import { SettingGroup } from '../../enums/settings/settings-group.enum';
+import { SettingModel } from '../../../models/settings.model';
+import { SettingGroup } from '../../../enums/settings/settings-group.enum';
 
 @Component({
   selector: 'settings',

@@ -24,7 +24,15 @@ export class Pfp {
     this.router = router;
   }
 
+  public redirectToProfile(): void {
+    this.router.navigate(['/profile', "self"]);
+  }
+
+  public redirectToSponsors(): void {
+    this.router.navigate(['/sponsors', "self"]);
+  }
+
   public redirectToSettings(): void {
-    this.router.navigate(['/account-settings', 123]);
+    this.router.navigate(['/account-settings']);
   }
 }

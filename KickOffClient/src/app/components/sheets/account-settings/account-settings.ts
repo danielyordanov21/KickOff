@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Settings } from '../../settings/settings';
+import { Settings } from '../../shared/settings/settings';
 
 import { SettingModel } from '../../../models/settings.model';
 
@@ -26,6 +26,13 @@ export class AccountSettings {
       Description: 'Change your password',
       HoverText: 'Update your account password',
       Value: ''
+    },
+    {
+      Group: 'Notifications',
+      Name: 'Username',
+      Description: 'Your username',
+      HoverText: 'This is your unique username',
+      Value: 'string'
     }
   ];
 }

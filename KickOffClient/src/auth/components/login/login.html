@@ -1,0 +1,33 @@
+<div class="login-container">
+  <h2>Login</h2>
+
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <label for="username">Username</label>
+    <input
+      id="username"
+      type="text"
+      formControlName="username"
+      autocomplete="username"
+    />
+    <small *ngIf="loginForm.controls.username.touched && loginForm.controls.username.invalid">
+      Username must be at least 3 characters
+    </small>
+
+    <label for="password">Password</label>
+    <input
+      id="password"
+      type="password"
+      formControlName="password"
+      autocomplete="current-password"
+    />
+    <small *ngIf="loginForm.controls.password.touched && loginForm.controls.password.invalid">
+      Password must be at least 6 characters
+    </small>
+
+    <button type="submit" [disabled]="loginForm.invalid || isSubmitting">
+      {{ isSubmitting ? 'Logging in...' : 'Login' }}
+    </button>
+
+    <p class="error" *ngIf="loginError">{{ loginError }}</p>
+  </form>
+</div>

@@ -5,12 +5,12 @@
 <mat-menu #pfpMenu="matMenu">
     <button mat-menu-item>
         <mat-icon>person</mat-icon>
-        <span>Profile</span>
+        <button (click)="redirectToProfile()">Profile</button>
     </button>
 
     <button mat-menu-item>
         <mat-icon>volunteer_activism</mat-icon>
-        <span>Sponsors / Donators</span>
+        <button (click)="redirectToSponsors()">Sponsors / Donators</button>
     </button>
 
     <button mat-menu-item>

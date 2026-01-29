@@ -1,28 +1,13 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
 
-public class User
+public class ApplicationUser : IdentityUser
 {
-    [Key]
-    public required Guid Id { get; set; }
-    
-    [Required]
-    public required Guid IdP { get; set; }
-
-    [Required]
-    public required UserRole Role { get; set; }
-
-    [Required]
-    public required string Username { get; set; }
-    
-    [Required]
-    public required string PasswordHash { get; set; }
-
+    public Guid IdP { get; set; } = Guid.NewGuid();
+    public UserState State { get; set; } = UserState.Unknown;
     public string? ProfilePictureUrl { get; set; }
 
     public ICollection<string> ProjectIds { get; } = [];
-    
     public ICollection<string> FollowerIdsP { get; } = [];
     public ICollection<string> FollowingIdsP { get; } = [];
-
-    public UserState State { get; set; } = UserState.Unknown;
 }
