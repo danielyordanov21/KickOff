@@ -39,4 +39,15 @@ public class JwtTokenService
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
+    public RefreshToken GenerateRefreshToken(string ipAddress)
+    {
+        return new RefreshToken
+        {
+            Token = Convert.ToBase64String(System.Security.Cryptography.RandomNumberGenerator.GetBytes(64)),
+            Expires = DateTime.UtcNow.AddDays(7),
+            Created = DateTime.UtcNow,
+            CreatedByIp = ipAddress
+        };
+    }
+
 }

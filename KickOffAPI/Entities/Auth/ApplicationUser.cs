@@ -10,4 +10,6 @@ public class ApplicationUser : IdentityUser
     public ICollection<string> ProjectIds { get; } = [];
     public ICollection<string> FollowerIdsP { get; } = [];
     public ICollection<string> FollowingIdsP { get; } = [];
+
+    public List<RefreshToken> RefreshTokens { get; set; } = new();
 }

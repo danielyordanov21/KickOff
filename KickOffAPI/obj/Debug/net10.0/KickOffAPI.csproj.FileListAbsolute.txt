@@ -9,6 +9,8 @@ C:\Users\Daniel\Documents\Projects\KickOff\KickOffAPI\bin\Debug\net10.0\KickOffA
 C:\Users\Daniel\Documents\Projects\KickOff\KickOffAPI\bin\Debug\net10.0\Azure.Core.dll
 C:\Users\Daniel\Documents\Projects\KickOff\KickOffAPI\bin\Debug\net10.0\Azure.Identity.dll
 C:\Users\Daniel\Documents\Projects\KickOff\KickOffAPI\bin\Debug\net10.0\Humanizer.dll
+C:\Users\Daniel\Documents\Projects\KickOff\KickOffAPI\bin\Debug\net10.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\Daniel\Documents\Projects\KickOff\KickOffAPI\bin\Debug\net10.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
 C:\Users\Daniel\Documents\Projects\KickOff\KickOffAPI\bin\Debug\net10.0\Microsoft.AspNetCore.OpenApi.dll
 C:\Users\Daniel\Documents\Projects\KickOff\KickOffAPI\bin\Debug\net10.0\Microsoft.Bcl.AsyncInterfaces.dll
 C:\Users\Daniel\Documents\Projects\KickOff\KickOffAPI\bin\Debug\net10.0\Microsoft.Bcl.Cryptography.dll
@@ -157,5 +159,3 @@ C:\Users\Daniel\Documents\Projects\KickOff\KickOffAPI\obj\Debug\net10.0\refint\K
 C:\Users\Daniel\Documents\Projects\KickOff\KickOffAPI\obj\Debug\net10.0\KickOffAPI.pdb
 C:\Users\Daniel\Documents\Projects\KickOff\KickOffAPI\obj\Debug\net10.0\KickOffAPI.genruntimeconfig.cache
 C:\Users\Daniel\Documents\Projects\KickOff\KickOffAPI\obj\Debug\net10.0\ref\KickOffAPI.dll
-C:\Users\Daniel\Documents\Projects\KickOff\kickoffapi\bin\Debug\net10.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
-C:\Users\Daniel\Documents\Projects\KickOff\kickoffapi\bin\Debug\net10.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
