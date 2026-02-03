@@ -2,12 +2,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-public class AppIdentityDbContext 
-    : IdentityDbContext<ApplicationUser>
+public class AppIdentityDbContext(DbContextOptions<AppIdentityDbContext> options)
+        : IdentityDbContext<ApplicationUser>(options)
 {
-    public AppIdentityDbContext(DbContextOptions<AppIdentityDbContext> options)
-        : base(options) { }
-
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
     protected override void OnModelCreating(ModelBuilder builder)

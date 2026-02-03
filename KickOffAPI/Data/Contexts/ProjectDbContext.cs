@@ -1,11 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-public class ProjectDbContext : BaseDbContext<ProjectDbContext>
+public class ProjectDbContext(DbContextOptions<ProjectDbContext> options) : BaseDbContext<ProjectDbContext>(options)
 {
     public DbSet<Project> Projects => Set<Project>();
-
-    public ProjectDbContext(DbContextOptions<ProjectDbContext> options)
-        : base(options)
-    {
-    }
 }

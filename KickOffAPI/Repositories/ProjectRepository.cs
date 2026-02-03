@@ -1,6 +1,3 @@
-public class ProjectRepository : BaseRepository<Project>
+public class ProjectRepository(ProjectDbContext context) : BaseRepository<Project>(context)
 {
-    public ProjectRepository(ProjectDbContext context) : base(context)
-    {
-    }
 }

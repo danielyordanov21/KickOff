@@ -1,103 +1,33 @@
 using Microsoft.EntityFrameworkCore;
 
-public class BaseRepository<T> : IBaseRepository<T> where T : class
+public class BaseRepository<T>(DbContext context) : IBaseRepository<T> where T : class
 {
-    private readonly DbContext _context;
-    private readonly DbSet<T> _dbSet;
+    private readonly DbSet<T> _dbSet = context.Set<T>();
 
-    public BaseRepository(DbContext context)
+
+    public async Task<List<T>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        _context = context;
-        _dbSet = context.Set<T>();
+        return await _dbSet.ToListAsync(cancellationToken);
     }
 
-    public ICollection<T> GetAll()
+    public async Task<T?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {
-        try
-        {
-            return _dbSet.ToList();
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"Error retrieving all entities: {ex.Message}");
-        }
+        return await _dbSet.FindAsync(id, cancellationToken);
     }
 
-    public T GetById(int id)
+    public async Task AddAsync(T entity, CancellationToken cancellationToken = default)
     {
-        try
-        {
-            return _dbSet.Find(id)
-                ?? throw new Exception("Entity not found.");
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"Error retrieving entity by ID: {ex.Message}");
-        }
+        await _dbSet.AddAsync(entity, cancellationToken);
     }
 
-    public void Add(T entity)
+    public async Task AddRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default)
     {
-        try
-        {
-            _dbSet.Add(entity);
-            _context.SaveChanges();
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"Error adding entity: {ex.Message}");
-        }
+        await _dbSet.AddRangeAsync(entities, cancellationToken);
     }
 
-    public void AddRange(ICollection<T> entities)
-    {
-        try
-        {
-            _dbSet.AddRange(entities);
-            _context.SaveChanges();
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"Error adding entities: {ex.Message}");
-        }
-    }
+    public void Update(T entity) => _dbSet.Update(entity);
 
-    public void Update(T entity)
-    {
-        try
-        {
-            _dbSet.Update(entity);
-            _context.SaveChanges();
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"Error updating entity: {ex.Message}");
-        }
-    }
+    public void Delete(T entity) => _dbSet.Remove(entity);
 
-    public void Delete(T entity)
-    {
-        try
-        {
-            _dbSet.Remove(entity);
-            _context.SaveChanges();
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"Error deleting entity: {ex.Message}");
-        }
-    }
-
-    public void DeleteRange(ICollection<T> entities)
-    {
-        try
-        {
-            _dbSet.RemoveRange(entities);
-            _context.SaveChanges();
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"Error deleting entities: {ex.Message}");
-        }
-    }
+    public void DeleteRange(ICollection<T> entities) => _dbSet.RemoveRange(entities);
 }

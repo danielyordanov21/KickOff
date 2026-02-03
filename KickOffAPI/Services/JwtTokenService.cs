@@ -5,14 +5,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
-public class JwtTokenService
+public class JwtTokenService(IConfiguration config)
 {
-    private readonly IConfiguration _config;
-
-    public JwtTokenService(IConfiguration config)
-    {
-        _config = config;
-    }
+    private readonly IConfiguration _config = config;
 
     public string CreateToken(ApplicationUser user, IList<string> roles)
     {

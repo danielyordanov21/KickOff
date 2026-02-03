@@ -54,6 +54,7 @@ builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 builder.Services.AddScoped<ProjectRepository>();
 
 builder.Services.AddScoped<JwtTokenService>();
+builder.Services.AddScoped<ProjectService>();
 
 var app = builder.Build();
 
