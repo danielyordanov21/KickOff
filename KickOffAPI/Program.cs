@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using KickOffAPI.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,6 +56,8 @@ builder.Services.AddScoped<ProjectRepository>();
 
 builder.Services.AddScoped<JwtTokenService>();
 builder.Services.AddScoped<ProjectService>();
+
+builder.Services.AddScoped<ProjectDbSeeder>();
 
 var app = builder.Build();
 
