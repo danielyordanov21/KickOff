@@ -8,8 +8,10 @@ public class ProjectDbSeeder(ProjectRepository projectRepository)
         var existingProjects = await _projectRepository.GetAllAsync();
         if (existingProjects.Any())
         {
+            System.Console.WriteLine("Projects already exist in the database. Skipping seeding.");
             return; // Database has been seeded
         }
+        System.Console.WriteLine("No projects found in the database. Seeding initial data...");
 
         // Seed initial projects
         var projects = new List<Project>
@@ -20,5 +22,6 @@ public class ProjectDbSeeder(ProjectRepository projectRepository)
         };
 
         await _projectRepository.AddRangeAsync(projects);
+        System.Console.WriteLine($"\nSeeded initial projects to the database.\n");
     }
 }

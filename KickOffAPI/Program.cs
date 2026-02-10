@@ -78,6 +78,13 @@ using (var scope = app.Services.CreateScope())
 }
 
 
+// Seed projects
+using (var scope = app.Services.CreateScope())
+{
+    var seeder = scope.ServiceProvider.GetRequiredService<ProjectDbSeeder>();
+    await seeder.SeedAsync();
+}
+
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

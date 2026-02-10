@@ -25,39 +25,39 @@ export class ProfileView {
   isLoading = true;
   error: string | null = null;
 
-  // constructor(
-  //   private route: ActivatedRoute,
-  //   private userService: UserService
-  // ) {}
+  constructor(
+    private route: ActivatedRoute,
+    private userService: UserService
+  ) {}
 
-  // ngOnInit(): void {
-  //   const id = this.route.snapshot.paramMap.get('id');
-  //   if (id === 'self') {
-  //     this.userService.getCurrentUser().subscribe({
-  //       next: (user) => {
-  //         this.user = user;
-  //         this.isLoading = false;
-  //       },
-  //       error: (err) => {
-  //         this.error = err;
-  //         this.isLoading = false;
-  //         alert("An error occurred while fetching user profile.");
-  //         console.error(err);
-  //       }
-  //     });
-  //   } else if (id) {
-  //     this.userService.getUser(id).subscribe({
-  //       next: (user) => {
-  //         this.user = user;
-  //         this.isLoading = false;
-  //       },
-  //       error: (err) => {
-  //         this.error = err;
-  //         this.isLoading = false;
-  //         alert("An error occurred while fetching user profile.");
-  //         console.error(err);
-  //       }
-  //     });
-  //   }
-  // }
+  ngOnInit(): void {
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id === 'self') {
+      this.userService.getCurrentUser().subscribe({
+        next: (user) => {
+          this.user = user;
+          this.isLoading = false;
+        },
+        error: (err) => {
+          this.error = err;
+          this.isLoading = false;
+          alert("An error occurred while fetching user profile.");
+          console.error(err);
+        }
+      });
+    } else if (id) {
+      this.userService.getUser(id).subscribe({
+        next: (user) => {
+          this.user = user;
+          this.isLoading = false;
+        },
+        error: (err) => {
+          this.error = err;
+          this.isLoading = false;
+          alert("An error occurred while fetching user profile.");
+          console.error(err);
+        }
+      });
+    }
+  }
 }
