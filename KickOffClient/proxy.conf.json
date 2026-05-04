@@ -1,0 +1,8 @@
+{
+  "/api": {
+    "target": "https://kickoff-api-prod-f9drhpgyajf2h7aq.swedencentral-01.azurewebsites.net",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}

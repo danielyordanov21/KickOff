@@ -1,0 +1,156 @@
+:host {
+  display: block;
+  min-width: 0;
+  overflow: visible !important;
+  --project-reveal-space: clamp(9.5rem, 18vw, 12rem);
+}
+
+:host ::ng-deep p-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.carousel-shell {
+  min-width: 0;
+}
+
+.image-slide {
+  margin: 0;
+}
+
+.image-slide-media {
+  display: block;
+  width: 100%;
+  min-height: clamp(320px, 40vw, 440px);
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+:host ::ng-deep .shared-carousel {
+  width: 100%;
+}
+
+:host ::ng-deep .shared-carousel .p-carousel-content-container {
+  gap: 0.9rem;
+}
+
+:host ::ng-deep .shared-carousel .p-carousel-prev-button,
+:host ::ng-deep .shared-carousel .p-carousel-next-button {
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid rgba(121, 241, 241, 0.18);
+  border-radius: 999px;
+  background: rgba(4, 20, 22, 0.78);
+  color: #d7ffff;
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+
+:host ::ng-deep .shared-carousel .p-carousel-prev-button:hover,
+:host ::ng-deep .shared-carousel .p-carousel-next-button:hover {
+  border-color: rgba(121, 241, 241, 0.32);
+  background: rgba(9, 41, 43, 0.92);
+}
+
+:host ::ng-deep .shared-carousel-images .p-carousel-prev-button:hover {
+  transform: translate(-1px, calc(-50% - 1px)) !important;
+}
+
+:host ::ng-deep .shared-carousel-images .p-carousel-next-button:hover {
+  transform: translate(1px, calc(-50% - 1px)) !important;
+}
+
+:host ::ng-deep .shared-carousel .p-carousel-prev-button:disabled,
+:host ::ng-deep .shared-carousel .p-carousel-next-button:disabled {
+  opacity: 0.38;
+}
+
+:host ::ng-deep .shared-carousel .p-carousel-indicator-list {
+  margin: 0;
+  padding: 0;
+  gap: 0.45rem;
+}
+
+:host ::ng-deep .shared-carousel .p-carousel-indicator-button {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 999px;
+  background: rgba(173, 245, 245, 0.22);
+}
+
+:host ::ng-deep .shared-carousel .p-carousel-indicator-active .p-carousel-indicator-button {
+  background: #8fece5;
+}
+
+:host ::ng-deep .shared-carousel-projects .p-carousel-item {
+  padding: 0 0.45rem;
+  overflow: visible;
+}
+
+:host ::ng-deep .shared-carousel-projects .p-carousel-viewport {
+  padding: 0.25rem 0;
+  overflow: visible;
+  clip-path: inset(0 0 calc(var(--project-reveal-space) * -1) 0);
+}
+
+:host ::ng-deep .shared-carousel-projects .p-carousel-content-container,
+:host ::ng-deep .shared-carousel-projects .p-carousel-item-list,
+:host ::ng-deep .shared-carousel-projects .p-carousel-content {
+  overflow: visible;
+}
+
+:host ::ng-deep .shared-carousel-images .p-carousel-content {
+  position: relative;
+  align-items: center;
+  gap: 0;
+}
+
+:host ::ng-deep .shared-carousel-images .p-carousel-item {
+  padding: 0;
+}
+
+:host ::ng-deep .shared-carousel-images .p-carousel-prev-button,
+:host ::ng-deep .shared-carousel-images .p-carousel-next-button {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  margin: 0;
+  transform: translateY(-50%);
+}
+
+:host ::ng-deep .shared-carousel-images .p-carousel-prev-button {
+  left: clamp(0.9rem, 2vw, 1.25rem);
+  text-align: center;
+  align-items: center;
+  padding-right: 4px;
+}
+
+:host ::ng-deep .shared-carousel-images .p-carousel-next-button {
+  right: clamp(0.9rem, 2vw, 1.25rem);
+  text-align: center;
+  align-items: center;
+  padding-left: 4px;
+}
+
+:host ::ng-deep .shared-carousel-images .p-carousel-prev-button:hover {
+  transform: translate(-1px, calc(-50% - 1px));
+}
+
+:host ::ng-deep .shared-carousel-images .p-carousel-next-button:hover {
+  transform: translate(1px, calc(-50% - 1px));
+}
+
+@media (max-width: 640px) {
+  :host ::ng-deep .shared-carousel .p-carousel-content-container {
+    gap: 0.7rem;
+  }
+
+  :host ::ng-deep .shared-carousel .p-carousel-prev-button,
+  :host ::ng-deep .shared-carousel .p-carousel-next-button {
+    width: 2.4rem;
+    height: 2.4rem;
+    text-align: center;
+  }
+}

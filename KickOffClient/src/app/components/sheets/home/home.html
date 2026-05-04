@@ -1,0 +1,200 @@
+<main class="home-shell">
+  <div class="home-layout">
+    <aside class="home-side">
+      <discover-creators></discover-creators>
+    </aside>
+
+    <div class="home-content">
+      @if (!hasActiveFilters()) {
+        <section class="panel hero-panel">
+          <div class="hero-copy">
+            <p class="eyebrow">Discover</p>
+            <h1>Find the projects that deserve your next click.</h1>
+            <p class="supporting-copy">
+              Browse the latest ideas, filter the catalogue by state, and switch between newest
+              and oldest without leaving the home sheet.
+            </p>
+
+            <div class="hero-actions">
+              <button type="button" class="primary-btn" (click)="applyFilters()">Refresh results</button>
+              @if (canCreateProjects) {
+                <button type="button" class="ghost-btn" (click)="goToCreateProject()">Create a project</button>
+              } @else if (isLoggedIn) {
+                <button type="button" class="ghost-btn" (click)="goToBecomeProducer()">Become a producer</button>
+              } @else {
+                <button type="button" class="ghost-btn" (click)="goToRegister()">Create an account</button>
+              }
+            </div>
+          </div>
+
+          <div class="hero-metrics">
+            <article>
+              <span class="metric-label">Featured</span>
+              <strong>{{ featuredProjects.length }}</strong>
+            </article>
+
+            <article>
+              <span class="metric-label">Matches</span>
+              <strong>{{ totalCount }}</strong>
+            </article>
+
+            <article>
+              <span class="metric-label">Showing</span>
+              <strong>{{ visibleRangeStart }}-{{ visibleRangeEnd }}</strong>
+            </article>
+
+            <article>
+              <span class="metric-label">Page</span>
+              <strong>{{ pageNumber }}/{{ totalPages }}</strong>
+            </article>
+          </div>
+        </section>
+
+        @if (featuredProjects.length > 0) {
+          <section class="panel featured-panel">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Featured</p>
+                <h2>Projects people should notice first</h2>
+              </div>
+              <p class="supporting-copy">A quick pass across standout work already on the platform.</p>
+            </div>
+
+            <carousel [featuredProjects]="featuredProjects"></carousel>
+          </section>
+        } @else if (featuredLoading) {
+          <section class="panel featured-panel">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Featured</p>
+                <h2>Projects people should notice first</h2>
+              </div>
+              <p class="supporting-copy">Loading standout work for the top rail.</p>
+            </div>
+
+            <div class="projects-grid skeleton-grid" aria-hidden="true">
+              @for (slot of skeletonCards; track slot) {
+                <article class="project-skeleton">
+                  <div class="skeleton-media"></div>
+                  <div class="skeleton-line short"></div>
+                  <div class="skeleton-line title"></div>
+                  <div class="skeleton-line"></div>
+                  <div class="skeleton-line"></div>
+                </article>
+              }
+            </div>
+          </section>
+        }
+      }
+
+      <section class="panel browse-panel">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Browse</p>
+            <h2>Search from the app header, scan results here</h2>
+          </div>
+
+          <p class="supporting-copy">
+            @if (hasActiveFilters()) {
+              Your header filters are shaping this view right now.
+            } @else {
+              Use the header search bar to jump into a narrower project feed.
+            }
+          </p>
+        </div>
+
+        @if (activeFilters.length > 0) {
+          <div class="active-filters">
+            <p class="supporting-copy">
+              {{ activeFilters.length }} active {{ activeFilters.length === 1 ? 'filter' : 'filters' }}
+              shaping this feed.
+            </p>
+
+            <div class="active-filter-list">
+              @for (filter of activeFilters; track filter) {
+                <span class="filter-chip">{{ filter }}</span>
+              }
+            </div>
+          </div>
+        }
+
+        @if (loading) {
+          <div class="state-card">
+            <p class="eyebrow">Loading</p>
+            <h3>Fetching projects...</h3>
+            <p class="supporting-copy">Pulling the latest results from the backend search endpoint.</p>
+          </div>
+
+          <div class="projects-grid skeleton-grid" aria-hidden="true">
+            @for (slot of skeletonCards; track slot) {
+              <article class="project-skeleton">
+                <div class="skeleton-media"></div>
+                <div class="skeleton-line short"></div>
+                <div class="skeleton-line title"></div>
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line"></div>
+              </article>
+            }
+          </div>
+        } @else if (error) {
+          <div class="state-card error">
+            <p class="eyebrow">Unavailable</p>
+            <h3>We could not load the project feed</h3>
+            <p class="supporting-copy">{{ error }}</p>
+            <button type="button" class="ghost-btn" (click)="retry()">Try again</button>
+          </div>
+        } @else if (projects.length > 0) {
+          <div class="results-meta">
+            <p>Showing {{ visibleRangeStart }}-{{ visibleRangeEnd }} of {{ totalCount }} projects.</p>
+
+            <div class="results-meta-tags">
+              <span class="results-pill">{{ selectedState === 'All' ? 'All states' : selectedState }}</span>
+              <span class="results-pill">{{ sortNewest ? 'Newest first' : 'Oldest first' }}</span>
+              <span class="results-pill">{{ pageSize }} per page</span>
+            </div>
+          </div>
+
+          <div class="projects-grid">
+            @for (project of projects; track trackProject($index, project)) {
+              <project-card [project]="project"></project-card>
+            }
+          </div>
+
+          <div class="pagination">
+            <button
+              type="button"
+              class="ghost-btn"
+              (click)="goToPreviousPage()"
+              [disabled]="!hasPreviousPage">
+              Previous
+            </button>
+
+            <div class="page-status">
+              <strong>Page {{ pageNumber }}</strong>
+              <span>of {{ totalPages }}</span>
+            </div>
+
+            <button
+              type="button"
+              class="ghost-btn"
+              (click)="goToNextPage()"
+              [disabled]="!hasNextPage">
+              Next
+            </button>
+          </div>
+        } @else {
+          <div class="state-card">
+            <p class="eyebrow">No Results</p>
+            <h3>No projects matched this view</h3>
+            <p class="supporting-copy">
+              Try a broader keyword, switch back to all states, or reset the sort.
+            </p>
+            @if (hasActiveFilters()) {
+              <button type="button" class="ghost-btn" (click)="clearFilters()">Clear filters</button>
+            }
+          </div>
+        }
+      </section>
+    </div>
+  </div>
+</main>

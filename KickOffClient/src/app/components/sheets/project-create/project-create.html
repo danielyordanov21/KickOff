@@ -1,0 +1,260 @@
+<main class="project-create-shell">
+  <section class="project-create-card">
+    <header class="hero">
+      <p class="eyebrow">{{ pageEyebrow }}</p>
+      <h1>{{ pageTitle }}</h1>
+      <p class="intro">{{ pageIntro }}</p>
+
+      @if (isEditMode) {
+        <div class="owner-overview">
+          <article class="summary-card">
+            <span class="metric-label">Public Story</span>
+            <strong>{{ selectedImages.length }} assets</strong>
+            <p>{{ tagCount }} tags and {{ contactCount }} contacts are ready for the live page.</p>
+          </article>
+
+          <article class="summary-card">
+            <span class="metric-label">Campaign Controls</span>
+            <strong>{{ formattedFinancialGoal }}</strong>
+            <p>{{ projectForm.controls.state.value }} state with timeline set to {{ formattedCampaignEnd }}.</p>
+          </article>
+
+          <article class="summary-card">
+            <span class="metric-label">Owner Tools</span>
+            <strong>{{ collaboratorCount }} collaborators</strong>
+            <p>Project updates stay editable on the public page, while this screen holds the core settings.</p>
+          </article>
+        </div>
+
+        <section class="strategy-banner">
+          <div>
+            <p class="eyebrow">Strategy Check</p>
+            <h2>{{ strategyVerdict }}</h2>
+            <p>{{ strategyVerdictCopy }}</p>
+          </div>
+        </section>
+
+        <section class="policy-grid" aria-label="Post-launch change rules">
+          @for (policy of postLaunchPolicies; track policy.title) {
+            <article class="policy-card" [class.supported]="policy.tone === 'supported'" [class.partial]="policy.tone === 'partial'">
+              <span class="policy-status">{{ policy.status }}</span>
+              <h3>{{ policy.title }}</h3>
+              <p>{{ policy.description }}</p>
+              <small>{{ policy.detail }}</small>
+            </article>
+          }
+        </section>
+      }
+    </header>
+
+    @if (isLoading) {
+      <p class="hint">Loading project details...</p>
+    } @else {
+    <form [formGroup]="projectForm" (ngSubmit)="onSubmit()" class="project-form">
+      <section class="form-section">
+        <div class="section-header-block">
+          <h2>{{ isEditMode ? 'Public Story' : 'Core Story' }}</h2>
+          <p class="section-copy">
+            {{ isEditMode
+              ? 'Update the public-facing narrative, visuals, and context behind the project.'
+              : 'Set up the story that people will see when the project goes live.' }}
+          </p>
+        </div>
+
+        <label>
+          <span>Headline</span>
+          <input type="text" formControlName="headline" placeholder="A short banner title for the project" />
+          <small class="hint">This is the fast first impression on cards and at the top of the project page.</small>
+        </label>
+
+        <label>
+          <span>Project Goal</span>
+          <input type="text" formControlName="goal" placeholder="What are you trying to achieve?" />
+          <small class="hint">Keep the core promise stable once people start backing the project.</small>
+          @if (projectForm.controls.goal.touched && projectForm.controls.goal.invalid) {
+            <small class="error">Goal must be between 10 and 200 characters.</small>
+          }
+        </label>
+
+        <label>
+          <span>Description</span>
+          <textarea rows="6" formControlName="description" placeholder="Describe the project, audience, and why it matters."></textarea>
+          <small class="hint">Editing the story after launch is normal as long as the changes stay transparent and truthful.</small>
+          @if (projectForm.controls.description.touched && projectForm.controls.description.invalid) {
+            <small class="error">Description must be between 20 and 5000 characters.</small>
+          }
+        </label>
+
+        <label>
+          <span>Problem</span>
+          <textarea rows="4" formControlName="problem" placeholder="What problem does this project solve?"></textarea>
+          <small class="hint">Use this to explain why the project deserves attention right now.</small>
+        </label>
+
+        <label>
+          <span>Extra Info</span>
+          <textarea rows="4" formControlName="extraInfo" placeholder="Anything else collaborators or backers should know."></textarea>
+          <small class="hint">Good place for FAQ, risks, timeline notes, or shipping context until those settings get their own modules.</small>
+        </label>
+      </section>
+
+      <section class="form-section two-column">
+        <div class="section-header-block">
+          <h2>Campaign Controls</h2>
+          <p class="section-copy">
+            Rules that shape how the project behaves once it is public.
+          </p>
+        </div>
+
+        <label>
+          <span>Category</span>
+          <input type="text" formControlName="category" placeholder="Film, music, startup, community, etc." />
+          <small class="hint">Helps visitors quickly understand the kind of project they are evaluating.</small>
+        </label>
+
+        <label>
+          <span>Financial Goal</span>
+          <input type="number" min="0" step="0.01" formControlName="financialGoal" placeholder="0.00" />
+          <small class="hint">
+            {{
+              isEditMode
+                ? 'Good rule: raise the goal only before full funding, never decrease it, and lock it after success.'
+                : 'Set the funding target now. After launch, owners should only be able to increase it under clear rules.'
+            }}
+          </small>
+        </label>
+
+        <label>
+          <span>State</span>
+          <select formControlName="state">
+            @for (state of stateOptions; track state) {
+              <option [value]="state">{{ state }}</option>
+            }
+          </select>
+          <small class="hint">Treat `Active` as the live public campaign state.</small>
+        </label>
+
+        <label>
+          <span>End Date</span>
+          <input type="datetime-local" formControlName="endsAt" />
+          <small class="hint">
+            {{
+              isEditMode
+                ? 'Shortening the campaign is okay. Extending beyond the original public end date should stay off-limits.'
+                : 'Choose the original public deadline carefully so later changes can stay trust-preserving.'
+            }}
+          </small>
+        </label>
+      </section>
+
+      <section class="form-section">
+        <div class="section-header">
+          <div>
+            <h2>Tags</h2>
+            <p class="section-copy">Lightweight signals that help people understand the project quickly.</p>
+          </div>
+          <button type="button" class="ghost-btn" (click)="addTag()">Add Tag</button>
+        </div>
+
+        <div class="array-list" formArrayName="tags">
+          @for (control of tags.controls; track control; let i = $index) {
+            <div class="array-row">
+              <input type="text" [formControlName]="i" placeholder="Add a tag" />
+              <button type="button" class="ghost-btn danger" (click)="removeTag(i)">Remove</button>
+            </div>
+          }
+        </div>
+      </section>
+
+      <section class="form-section">
+        <div class="section-header-block">
+          <h2>Project Images</h2>
+          <p class="section-copy">Refresh visuals anytime when the public story changes.</p>
+        </div>
+
+        <image-uploader
+          [images]="selectedImages"
+          [maxFiles]="6"
+          label="Project Images"
+          [helperText]="imageUploaderHelperText"
+          (changed)="onImagesChanged($event)">
+        </image-uploader>
+      </section>
+
+      <section class="form-section">
+        <div class="section-header">
+          <div>
+            <h2>Contacts</h2>
+            <p class="section-copy">Public contact paths visitors can use to reach the team.</p>
+          </div>
+          <button type="button" class="ghost-btn" (click)="addContact()">Add Contact</button>
+        </div>
+
+        <div class="array-list" formArrayName="contacts">
+          @for (control of contacts.controls; track control; let i = $index) {
+            <div class="array-row">
+              <input type="text" [formControlName]="i" placeholder="Email, phone, website, or social handle" />
+              <button type="button" class="ghost-btn danger" (click)="removeContact(i)">Remove</button>
+            </div>
+          }
+        </div>
+      </section>
+
+      <section class="form-section">
+        <div class="section-header">
+          <div>
+            <h2>Collaborator IDs</h2>
+            <p class="section-copy">Internal references for people already attached to the project.</p>
+          </div>
+          <button type="button" class="ghost-btn" (click)="addCollaborator()">Add Collaborator</button>
+        </div>
+
+        <div class="array-list" formArrayName="collaboratorsIdP">
+          @if (collaboratorsIdP.length === 0) {
+            <p class="hint">Optional. Add known collaborator IDs if you already have them.</p>
+          }
+
+          @for (control of collaboratorsIdP.controls; track control; let i = $index) {
+            <div class="array-row">
+              <input type="text" [formControlName]="i" placeholder="Collaborator ID" />
+              <button type="button" class="ghost-btn danger" (click)="removeCollaborator(i)">Remove</button>
+            </div>
+          }
+        </div>
+      </section>
+
+      @if (isEditMode) {
+        <section class="form-section">
+          <div class="section-header-block">
+            <h2>Owner Reference</h2>
+            <p class="section-copy">Private identifier for support and internal project tooling.</p>
+          </div>
+
+          <label>
+            <span>Settings ID</span>
+            <input type="text" formControlName="settingsId" readonly />
+            <small class="hint">Keep this stable after launch unless you have a migration plan behind it.</small>
+          </label>
+        </section>
+      }
+
+      @if (submitError) {
+        <p class="submit-error">{{ submitError }}</p>
+      }
+
+      <div class="actions">
+        <button type="button" class="ghost-btn" [routerLink]="projectId ? ['/project', projectId] : ['/']">
+          {{ isEditMode ? 'Back to Project' : 'Cancel' }}
+        </button>
+        <button type="submit" class="primary-btn" [disabled]="isSubmitting">
+          {{
+            isSubmitting
+              ? (isEditMode ? 'Saving settings...' : 'Creating...')
+              : (isEditMode ? 'Save Settings' : 'Create Project')
+          }}
+        </button>
+      </div>
+    </form>
+    }
+  </section>
+</main>

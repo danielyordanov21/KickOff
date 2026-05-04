@@ -1,0 +1,133 @@
+<main class="projects-shell">
+  @if (isLoading()) {
+    <section class="state-card">
+      <mat-icon class="spin">refresh</mat-icon>
+      <h2>Loading projects...</h2>
+      <p class="supporting-copy">Pulling the latest projects connected to your account.</p>
+    </section>
+  } @else if (error() && projectCount() === 0) {
+    <section class="state-card error">
+      <mat-icon>error</mat-icon>
+      <h2>We could not open your projects</h2>
+      <p class="supporting-copy">{{ error() }}</p>
+      <button type="button" class="ghost-btn" (click)="refreshProjects()">Try Again</button>
+    </section>
+  } @else {
+    <section class="projects-page">
+      <article class="panel hero-card">
+        <div class="hero-copy">
+          <p class="eyebrow">Projects</p>
+          <h1>Your project workspace</h1>
+          <p class="supporting-copy">
+            A simple home for the projects attached to {{ projectOwnerLabel() }}, with quick links to open or edit each one.
+          </p>
+        </div>
+
+        <div class="hero-actions">
+          <a [routerLink]="['/project', 'create']" class="primary-btn">New Project</a>
+          <a [routerLink]="['/profile', 'self']" class="ghost-btn">View Profile</a>
+        </div>
+
+        <div class="summary-grid">
+          <article class="summary-card">
+            <span class="summary-label">Total</span>
+            <strong>{{ projectCount() }}</strong>
+            <p>Projects currently listed in this workspace.</p>
+          </article>
+
+          <article class="summary-card">
+            <span class="summary-label">In Flight</span>
+            <strong>{{ activeProjectCount() }}</strong>
+            <p>Active or on-hold work that still needs attention.</p>
+          </article>
+
+          <article class="summary-card">
+            <span class="summary-label">Completed</span>
+            <strong>{{ completedProjectCount() }}</strong>
+            <p>Finished launches that still live on your profile.</p>
+          </article>
+
+          <article class="summary-card">
+            <span class="summary-label">Proposed</span>
+            <strong>{{ proposedProjectCount() }}</strong>
+            <p>Projects that are still being shaped before launch.</p>
+          </article>
+        </div>
+
+        @if (error()) {
+          <div class="inline-notice" role="status">
+            <span>{{ error() }}</span>
+            <button type="button" class="ghost-btn small-btn" (click)="refreshProjects()">Retry</button>
+          </div>
+        }
+      </article>
+
+      <article class="panel repository-card">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Repository View</p>
+            <h2>All projects</h2>
+          </div>
+
+          <p class="supporting-copy">
+            @if (projectCount() > 0) {
+              Browse every project tied to your producer account in one straightforward list.
+            } @else {
+              Start your first project and it will show up here.
+            }
+          </p>
+        </div>
+
+        @if (projectCount() > 0) {
+          <div class="project-list" role="list">
+            @for (project of projects(); track trackProject($index, project)) {
+              <article class="project-row" role="listitem">
+                <div class="project-main">
+                  <div class="project-heading">
+                    <div class="title-group">
+                      <a [routerLink]="['/project', project.id]" class="project-link">{{ project.name }}</a>
+                      <span class="state-pill" [class]="'state-pill ' + projectStateClass(project)">
+                        {{ formatState(project.state) }}
+                      </span>
+                    </div>
+
+                    <div class="project-actions">
+                      <a [routerLink]="['/project', project.id]" class="ghost-btn small-btn">Open</a>
+                      <a [routerLink]="['/project', project.id, 'edit']" class="primary-btn small-btn">Edit</a>
+                    </div>
+                  </div>
+
+                  <p class="project-description">{{ projectDescription(project) }}</p>
+                </div>
+
+                <div class="project-meta">
+                  <div>
+                    <span class="meta-label">Owner</span>
+                    <strong>{{ project.owner }}</strong>
+                  </div>
+
+                  <div>
+                    <span class="meta-label">Funding</span>
+                    <strong>{{ fundingSummary(project) }}</strong>
+                  </div>
+
+                  <div>
+                    <span class="meta-label">Deadline</span>
+                    <strong>{{ deadlineSummary(project) }}</strong>
+                  </div>
+                </div>
+              </article>
+            }
+          </div>
+        } @else {
+          <div class="empty-state">
+            <mat-icon>rocket_launch</mat-icon>
+            <h3>No projects yet</h3>
+            <p>Create your first project to start building a repository-style workspace for your launches.</p>
+            <a [routerLink]="['/project', 'create']" class="primary-btn">Create Project</a>
+          </div>
+        }
+      </article>
+    </section>
+  }
+</main>

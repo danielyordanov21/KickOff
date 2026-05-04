@@ -1,0 +1,75 @@
+<article
+  class="project-card"
+  role="link"
+  tabindex="0"
+  [attr.aria-label]="'Open project ' + project().name"
+  (click)="openProject()"
+  (keydown)="onCardKeydown($event)">
+  <div class="project-visual">
+    @if (cardImageUrl) {
+      <img
+        [src]="cardImageUrl"
+        [alt]="project().name + ' project image'"
+        class="project-image"
+        loading="lazy"
+        decoding="async" />
+    } @else {
+      <div class="project-image fallback">
+        <span>{{ projectInitial }}</span>
+      </div>
+    }
+
+    <div class="visual-badges">
+      <span class="state-pill" [class]="'state-pill ' + stateClass">{{ project().state }}</span>
+      <span class="owner-badge" aria-hidden="true">{{ ownerInitial }}</span>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <p class="owner-label">{{ project().owner }}</p>
+    <h3>{{ project().name }}</h3>
+    <p class="project-description">{{ projectPreviewDescription }}</p>
+
+    <section class="campaign-panel" aria-label="Campaign progress">
+      <div class="campaign-stat-grid">
+        <article class="campaign-stat funding-stat">
+          <span class="campaign-label">{{ fundingMetricLabel }}</span>
+          <strong class="campaign-value">{{ fundingMetricValue }}</strong>
+        </article>
+
+        <article class="campaign-stat timeline-stat">
+          <span class="campaign-label">Timeline</span>
+          <strong class="campaign-value">{{ timelineMetricValue }}</strong>
+        </article>
+      </div>
+
+      @if (showFundingProgressBar) {
+        <div class="campaign-progress" role="img" [attr.aria-label]="progressAriaLabel">
+          <span class="campaign-progress-fill" [style.width.%]="fundingProgressWidth"></span>
+        </div>
+      }
+
+      <p class="campaign-supporting">{{ campaignSupportingCopy }}</p>
+    </section>
+
+    <div class="card-reveal">
+      <div class="card-reveal-inner">
+        <p class="reveal-heading">
+          {{ hasExpandedDescription ? 'More about this project' : 'Project snapshot' }}
+        </p>
+
+        <p class="reveal-copy">{{ projectRevealCopy }}</p>
+        <p class="reveal-meta">
+          Creator: <strong>{{ project().owner }}</strong>
+          <span aria-hidden="true">|</span>
+          Status: <strong>{{ project().state }}</strong>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <span class="footer-copy">{{ footerCopy }}</span>
+    <span class="footer-arrow">View details</span>
+  </div>
+</article>

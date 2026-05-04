@@ -1,0 +1,38 @@
+<section class="creator-panel">
+  <div class="section-heading">
+    <p class="eyebrow">Creators</p>
+    <h2>Discover creators</h2>
+    <p class="supporting-copy">A quick list of people worth checking in on.</p>
+  </div>
+
+  @if (users$ | async; as users) {
+    @if (users.length > 0) {
+      <div class="creator-list">
+        @for (user of users; track user.id) {
+          <app-user-floating-panel [userId]="user.id" [previewUser]="user">
+            <a class="creator-card" [routerLink]="['/profile', user.id]">
+              @if (canShowProfileImage(user)) {
+                <img
+                  [src]="user.profilePictureUrl"
+                  [alt]="user.userName + ' profile picture'"
+                  class="avatar"
+                  (error)="markProfileImageBroken(user.id)" />
+              } @else {
+                <div class="avatar fallback">{{ initialsFor(user.userName) }}</div>
+              }
+
+              <div class="creator-copy">
+                <strong>{{ user.userName }}</strong>
+                <span>Hover for quick view</span>
+              </div>
+            </a>
+          </app-user-floating-panel>
+        }
+      </div>
+    } @else {
+      <div class="creator-empty">
+        <p>No creators to highlight yet.</p>
+      </div>
+    }
+  }
+</section>

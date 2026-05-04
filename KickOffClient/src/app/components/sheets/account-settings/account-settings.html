@@ -1,0 +1,551 @@
+<main class="settings-shell">
+  @if (user) {
+    <section class="settings-page">
+      <article class="hero-card">
+        <div class="hero-top">
+          <div class="avatar">
+            @if (user.profilePictureUrl) {
+              <img [src]="user.profilePictureUrl" [alt]="user.userName + ' profile picture'" />
+            } @else {
+              <span>{{ profileInitials }}</span>
+            }
+          </div>
+
+          <div class="hero-copy">
+            <p class="eyebrow">Account Settings</p>
+            <h1>{{ user.userName }}</h1>
+            <p class="supporting-copy">
+              Manage your profile, email, security settings, and account lifecycle from one place
+              without leaving the flow you are already in.
+            </p>
+
+            <div class="badge-row">
+              <span class="pill accent">{{ user.email }}</span>
+
+              @for (role of displayRoles; track role) {
+                <span class="pill">{{ role }}</span>
+              }
+
+              @if (user.state) {
+                <span class="pill muted">{{ formatLabel(user.state) }}</span>
+              }
+            </div>
+          </div>
+
+          <div class="hero-actions">
+            <a [routerLink]="['/profile', 'self']" class="ghost-btn">View Profile</a>
+
+            @if (canCreateProjects) {
+              <a [routerLink]="['/project', 'create']" class="primary-btn">Create Project</a>
+            } @else {
+              <button
+                type="button"
+                class="primary-btn"
+                [disabled]="isUpgradingProducer"
+                (click)="becomeProducer()">
+                {{ isUpgradingProducer ? 'Unlocking producer access...' : 'Become a Producer' }}
+              </button>
+              <a [routerLink]="['/']" class="ghost-btn">Explore Projects</a>
+            }
+          </div>
+        </div>
+
+        @if (!canCreateProjects || producerUpgradeError || producerUpgradeSuccess) {
+          <div class="producer-callout" [class.success]="!!producerUpgradeSuccess" [class.error]="!!producerUpgradeError">
+            <div class="callout-copy">
+              <p class="eyebrow">Producer Access</p>
+              <h2>{{ producerUpgradeSuccess ? 'You are ready to launch projects' : 'Unlock project creation on this account' }}</h2>
+              <p class="supporting-copy">
+                @if (producerUpgradeSuccess) {
+                  {{ producerUpgradeSuccess }}
+                } @else if (producerUpgradeError) {
+                  {{ producerUpgradeError }}
+                } @else {
+                  Become a producer to publish projects, manage updates, and appear as a creator across KickOff.
+                }
+              </p>
+            </div>
+          </div>
+        }
+
+        <div class="metrics-grid">
+          <article>
+            <span class="metric-label">Projects</span>
+            <strong>{{ projectsCount }}</strong>
+            <p>Projects already connected to your account.</p>
+          </article>
+
+          <article>
+            <span class="metric-label">Followers</span>
+            <strong>{{ followersCount }}</strong>
+            <p>People who may be keeping an eye on your work.</p>
+          </article>
+
+          <article>
+            <span class="metric-label">Following</span>
+            <strong>{{ followingCount }}</strong>
+            <p>Creators and teams you are currently tracking.</p>
+          </article>
+        </div>
+      </article>
+
+      <div class="cards-grid">
+        @for (card of detailCards; track card.title) {
+          <article class="detail-card">
+            <p class="eyebrow">{{ card.eyebrow }}</p>
+            <h2>{{ card.title }}</h2>
+            <p class="supporting-copy">{{ card.description }}</p>
+
+            <dl class="detail-list">
+              @for (entry of card.entries; track entry.label) {
+                <div>
+                  <dt>{{ entry.label }}</dt>
+                  <dd [class.mono]="entry.mono">{{ entry.value }}</dd>
+                </div>
+              }
+            </dl>
+
+            @if (card.note) {
+              <p class="note">{{ card.note }}</p>
+            }
+
+            @if (card.actionLabel && card.actionLink) {
+              <a [routerLink]="card.actionLink" class="ghost-btn inline-action">
+                {{ card.actionLabel }}
+              </a>
+            }
+          </article>
+        }
+      </div>
+
+      <article class="detail-card translation-card">
+        <p class="eyebrow">Profile Basics</p>
+        <h2>Keep your public profile details current</h2>
+        <p class="supporting-copy">
+          Update the name that appears across your KickOff profile, projects, and creator presence.
+        </p>
+
+        @if (profileSaveSuccess) {
+          <div class="status-banner success" role="status" aria-live="polite">
+            {{ profileSaveSuccess }}
+          </div>
+        }
+
+        @if (profileSaveError) {
+          <div class="status-banner error" role="alert" aria-live="assertive">
+            {{ profileSaveError }}
+          </div>
+        }
+
+        <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="preference-form">
+          <label class="field">
+            <span>Username</span>
+            <input
+              type="text"
+              formControlName="userName"
+              placeholder="Choose how your profile should appear"
+              autocomplete="nickname"
+              class="form-input" />
+            <small class="helper-text">
+              This name appears on your public profile and the projects connected to your account.
+            </small>
+
+            @if (profileForm.controls.userName.touched && profileForm.controls.userName.invalid) {
+              <small class="error-text">Use at least 3 characters for your username.</small>
+            }
+          </label>
+
+          <div class="password-actions">
+            <button
+              type="submit"
+              class="primary-btn"
+              [disabled]="isSavingProfile || profileForm.pristine || profileForm.invalid">
+              {{ isSavingProfile ? 'Saving profile...' : 'Save profile details' }}
+            </button>
+          </div>
+        </form>
+      </article>
+
+      <article class="detail-card translation-card">
+        <p class="eyebrow">Email</p>
+        <h2>Change and reconfirm your email address</h2>
+        <p class="supporting-copy">
+          Update the inbox tied to your account, then use the verification flow to confirm the new address.
+        </p>
+
+        @if (emailChangeSuccess) {
+          <div class="status-banner success" role="status" aria-live="polite">
+            {{ emailChangeSuccess }}
+          </div>
+        }
+
+        @if (emailChangeError) {
+          <div class="status-banner error" role="alert" aria-live="assertive">
+            {{ emailChangeError }}
+          </div>
+        }
+
+        @if (user.emailConfirmed === false) {
+          <div class="status-banner warning" role="status" aria-live="polite">
+            This email still needs confirmation. Recovery emails and future account notices work best once the new inbox is verified.
+          </div>
+        }
+
+        <form [formGroup]="emailForm" (ngSubmit)="changeEmail()" class="preference-form">
+          <div class="form-grid">
+            <label class="field">
+              <span>New email</span>
+              <input
+                type="email"
+                formControlName="email"
+                placeholder="name@example.com"
+                autocomplete="email"
+                class="form-input" />
+              <small class="helper-text">
+                We will send a fresh confirmation link to this address after you save it.
+              </small>
+
+              @if (emailForm.controls.email.touched && emailForm.controls.email.invalid) {
+                <small class="error-text">Enter a valid email address to continue.</small>
+              }
+            </label>
+
+            <label class="field">
+              <span>Current password</span>
+
+              <div class="password-field">
+                <input
+                  [type]="showEmailPassword ? 'text' : 'password'"
+                  formControlName="currentPassword"
+                  placeholder="Enter your current password"
+                  autocomplete="current-password"
+                  class="form-input" />
+
+                <button type="button" class="password-toggle" (click)="togglePasswordVisibility('email')">
+                  {{ showEmailPassword ? 'Hide' : 'Show' }}
+                </button>
+              </div>
+
+              @if (emailForm.controls.currentPassword.touched && emailForm.controls.currentPassword.invalid) {
+                <small class="error-text">Enter your current password to update your email.</small>
+              }
+            </label>
+          </div>
+
+          <div class="password-actions">
+            <button
+              type="submit"
+              class="primary-btn"
+              [disabled]="isChangingEmail || emailForm.invalid || emailForm.pristine">
+              {{ isChangingEmail ? 'Updating email...' : 'Update email' }}
+            </button>
+
+            @if (verificationEmailQueryParams) {
+              <a
+                [routerLink]="['/auth', 'verify-email']"
+                [queryParams]="verificationEmailQueryParams"
+                class="ghost-btn">
+                Open verification page
+              </a>
+            }
+          </div>
+        </form>
+      </article>
+
+      <article class="detail-card translation-card">
+        <p class="eyebrow">Chat Translation</p>
+        <h2>Choose how direct messages should read</h2>
+        <p class="supporting-copy">
+          Pick a language for incoming chat translations and decide whether translated messages
+          or the original wording should appear first when both are available.
+        </p>
+
+        @if (chatPreferencesSuccess) {
+          <div class="status-banner success" role="status" aria-live="polite">
+            {{ chatPreferencesSuccess }}
+          </div>
+        }
+
+        @if (chatPreferencesError) {
+          <div class="status-banner error" role="alert" aria-live="assertive">
+            {{ chatPreferencesError }}
+          </div>
+        }
+
+        <form [formGroup]="chatPreferencesForm" (ngSubmit)="saveChatPreferences()" class="preference-form">
+          <div class="form-grid">
+            <label class="field">
+              <span>Translated chat language</span>
+              <select class="form-select" formControlName="preferredChatLanguage">
+                @for (option of chatLanguageOptions; track option.value) {
+                  <option [value]="option.value">{{ option.label }}</option>
+                }
+              </select>
+              <small class="helper-text">
+                Current view: {{ selectedChatLanguageLabel }}
+              </small>
+            </label>
+
+            <label class="toggle-field">
+              <input type="checkbox" formControlName="showOriginalChatTextByDefault" />
+              <span>
+                <strong>Show original text first</strong>
+                <small>Keep translations available, but default to the sender's original wording.</small>
+              </span>
+            </label>
+          </div>
+
+          <div class="password-actions">
+            <button
+              type="submit"
+              class="primary-btn"
+              [disabled]="isSavingChatPreferences || chatPreferencesForm.pristine">
+              {{ isSavingChatPreferences ? 'Saving chat preferences...' : 'Save chat preferences' }}
+            </button>
+          </div>
+        </form>
+      </article>
+
+      <article class="detail-card password-card">
+        <p class="eyebrow">Security</p>
+        <h2>Change your password</h2>
+        <p class="supporting-copy">
+          Update your password here when you still have account access. If you ever get locked out,
+          the email recovery flow is still available from the sign-in page.
+        </p>
+
+        @if (passwordChangeSuccess) {
+          <div class="status-banner success" role="status" aria-live="polite">
+            {{ passwordChangeSuccess }}
+          </div>
+        }
+
+        @if (passwordChangeError) {
+          <div class="status-banner error" role="alert" aria-live="assertive">
+            {{ passwordChangeError }}
+          </div>
+        }
+
+        <form [formGroup]="passwordForm" (ngSubmit)="changePassword()" class="password-form">
+          <label class="field">
+            <span>Current password</span>
+
+            <div class="password-field">
+              <input
+                [type]="showCurrentPassword ? 'text' : 'password'"
+                formControlName="currentPassword"
+                placeholder="Enter your current password"
+                autocomplete="current-password"
+                class="form-input" />
+
+              <button type="button" class="password-toggle" (click)="togglePasswordVisibility('current')">
+                {{ showCurrentPassword ? 'Hide' : 'Show' }}
+              </button>
+            </div>
+
+            @if (passwordForm.controls.currentPassword.touched && passwordForm.controls.currentPassword.invalid) {
+              <small class="error-text">Enter your current password to continue.</small>
+            }
+          </label>
+
+          <label class="field">
+            <span>New password</span>
+
+            <div class="password-field">
+              <input
+                [type]="showNewPassword ? 'text' : 'password'"
+                formControlName="newPassword"
+                placeholder="Create a new password"
+                autocomplete="new-password"
+                class="form-input" />
+
+              <button type="button" class="password-toggle" (click)="togglePasswordVisibility('new')">
+                {{ showNewPassword ? 'Hide' : 'Show' }}
+              </button>
+            </div>
+
+            @if (passwordForm.controls.newPassword.touched && passwordForm.controls.newPassword.invalid) {
+              <small class="error-text">
+                Use 6+ characters, uppercase, lowercase, and a symbol.
+              </small>
+            }
+          </label>
+
+          <ul class="password-checklist">
+            @for (check of passwordChecks; track check.label) {
+              <li [class.met]="check.met">{{ check.label }}</li>
+            }
+          </ul>
+
+          <label class="field">
+            <span>Confirm new password</span>
+
+            <div class="password-field">
+              <input
+                [type]="showConfirmPassword ? 'text' : 'password'"
+                formControlName="confirmPassword"
+                placeholder="Repeat your new password"
+                autocomplete="new-password"
+                class="form-input" />
+
+              <button type="button" class="password-toggle" (click)="togglePasswordVisibility('confirm')">
+                {{ showConfirmPassword ? 'Hide' : 'Show' }}
+              </button>
+            </div>
+
+            @if (passwordForm.controls.confirmPassword.touched && passwordForm.getError('passwordMismatch')) {
+              <small class="error-text">Passwords do not match.</small>
+            }
+          </label>
+
+          <div class="password-actions">
+            <button
+              type="submit"
+              class="primary-btn"
+              [disabled]="passwordForm.invalid || isChangingPassword">
+              {{ isChangingPassword ? 'Updating password...' : 'Update password' }}
+            </button>
+
+            <a [routerLink]="['/auth', 'forgot-password']" [queryParams]="{ email: user.email }" class="ghost-btn">
+              Use recovery flow instead
+            </a>
+          </div>
+        </form>
+      </article>
+
+      <article class="detail-card danger-card">
+        <p class="eyebrow">Danger Zone</p>
+        <h2>Deactivate or permanently delete this account</h2>
+        <p class="supporting-copy">
+          Deactivation signs you out and blocks future sign-ins until support restores access.
+          Permanent deletion is only available when the account will not orphan owned projects or published updates.
+        </p>
+
+        <div class="danger-grid">
+          <form [formGroup]="deactivateForm" (ngSubmit)="deactivateAccount()" class="danger-panel">
+            <h3>Deactivate account</h3>
+            <p class="panel-copy">
+              Use this when you want the account disabled without deleting the profile data attached to it.
+            </p>
+
+            @if (deactivationError) {
+              <div class="status-banner error" role="alert" aria-live="assertive">
+                {{ deactivationError }}
+              </div>
+            }
+
+            <label class="field">
+              <span>Current password</span>
+
+              <div class="password-field">
+                <input
+                  [type]="showDeactivatePassword ? 'text' : 'password'"
+                  formControlName="currentPassword"
+                  placeholder="Enter your current password"
+                  autocomplete="current-password"
+                  class="form-input" />
+
+                <button type="button" class="password-toggle" (click)="togglePasswordVisibility('deactivate')">
+                  {{ showDeactivatePassword ? 'Hide' : 'Show' }}
+                </button>
+              </div>
+
+              @if (deactivateForm.controls.currentPassword.touched && deactivateForm.controls.currentPassword.invalid) {
+                <small class="error-text">Enter your current password to continue.</small>
+              }
+            </label>
+
+            <label class="field">
+              <span>Type {{ deactivateConfirmationTarget }} to confirm</span>
+              <input
+                type="text"
+                formControlName="confirmationText"
+                placeholder="{{ deactivateConfirmationTarget }}"
+                autocomplete="off"
+                class="form-input" />
+
+              @if (deactivateForm.controls.confirmationText.touched && !deactivateConfirmationMatches) {
+                <small class="error-text">Type {{ deactivateConfirmationTarget }} exactly to confirm.</small>
+              }
+            </label>
+
+            <button
+              type="submit"
+              class="danger-btn"
+              [disabled]="isProcessingDeactivation || deactivateForm.invalid || !deactivateConfirmationMatches">
+              {{ isProcessingDeactivation ? 'Deactivating account...' : 'Deactivate account' }}
+            </button>
+          </form>
+
+          <form [formGroup]="deleteForm" (ngSubmit)="deleteAccount()" class="danger-panel">
+            <h3>Delete account permanently</h3>
+            <p class="panel-copy">
+              This removes the account when it is safe to do so. If the account still owns work on the platform, deletion stays disabled and deactivation is the safer path.
+            </p>
+
+            @if (deleteAccountRestriction) {
+              <div class="status-banner warning" role="status" aria-live="polite">
+                {{ deleteAccountRestriction }}
+              </div>
+            }
+
+            @if (deleteAccountError) {
+              <div class="status-banner error" role="alert" aria-live="assertive">
+                {{ deleteAccountError }}
+              </div>
+            }
+
+            <label class="field">
+              <span>Current password</span>
+
+              <div class="password-field">
+                <input
+                  [type]="showDeletePassword ? 'text' : 'password'"
+                  formControlName="currentPassword"
+                  placeholder="Enter your current password"
+                  autocomplete="current-password"
+                  class="form-input" />
+
+                <button type="button" class="password-toggle" (click)="togglePasswordVisibility('delete')">
+                  {{ showDeletePassword ? 'Hide' : 'Show' }}
+                </button>
+              </div>
+
+              @if (deleteForm.controls.currentPassword.touched && deleteForm.controls.currentPassword.invalid) {
+                <small class="error-text">Enter your current password to continue.</small>
+              }
+            </label>
+
+            <label class="field">
+              <span>Type {{ deleteConfirmationTarget }} to confirm</span>
+              <input
+                type="text"
+                formControlName="confirmationText"
+                placeholder="{{ deleteConfirmationTarget }}"
+                autocomplete="off"
+                class="form-input" />
+
+              @if (deleteForm.controls.confirmationText.touched && !deleteConfirmationMatches) {
+                <small class="error-text">Type {{ deleteConfirmationTarget }} exactly to confirm.</small>
+              }
+            </label>
+
+            <button
+              type="submit"
+              class="danger-btn"
+              [disabled]="isDeletingAccount || deleteForm.invalid || !deleteConfirmationMatches || !canDeleteAccount">
+              {{ isDeletingAccount ? 'Deleting account...' : 'Delete account permanently' }}
+            </button>
+          </form>
+        </div>
+      </article>
+    </section>
+  } @else {
+    <section class="state-card error">
+      <mat-icon>error</mat-icon>
+      <h2>You need an active account to see settings</h2>
+      <p class="supporting-copy">Sign back in and this page will turn into your account overview.</p>
+      <a [routerLink]="['/auth', 'login']" class="primary-btn">Go to Login</a>
+    </section>
+  }
+</main>

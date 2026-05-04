@@ -1,0 +1,46 @@
+# Repository-local scratch and verification outputs
+_build/
+build-verification*/
+**/build-verification*/
+**/bin/*-verify/
+
+# Backend (.NET API)
+KickOffAPI/.vs/
+KickOffAPI/[Bb]in/
+KickOffAPI/[Oo]bj/
+KickOffAPI/[Dd]ebug/
+KickOffAPI/[Rr]elease/
+KickOffAPI/[Ll]ogs/
+KickOffAPI/TestResults/
+KickOffAPI/publish/
+KickOffAPI/appsettings.Local.json
+KickOffAPI/appsettings.*.Local.json
+KickOffAPI/.env
+KickOffAPI/.env.*
+!KickOffAPI/.env.example
+
+# Frontend (Angular client)
+KickOffClient/.angular/
+KickOffClient/.esbuild/
+KickOffClient/.vite/
+KickOffClient/dist/
+KickOffClient/out-tsc/
+KickOffClient/tmp/
+KickOffClient/node_modules/
+KickOffClient/coverage/
+KickOffClient/.nyc_output/
+KickOffClient/test-results/
+KickOffClient/cypress/videos/
+KickOffClient/cypress/screenshots/
+KickOffClient/.cache/
+KickOffClient/.parcel-cache/
+KickOffClient/.eslintcache
+KickOffClient/.stylelintcache
+KickOffClient/*.tsbuildinfo
+KickOffClient/npm-debug.log*
+KickOffClient/yarn-debug.log*
+KickOffClient/pnpm-debug.log*
+KickOffClient/lerna-debug.log*
+KickOffClient/.env
+KickOffClient/.env.*
+!KickOffClient/.env.example

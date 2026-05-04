@@ -1,0 +1,232 @@
+<main class="profile-shell">
+  @if (isLoading()) {
+    <section class="state-card">
+      <mat-icon class="spin">refresh</mat-icon>
+      <h2>Loading profile...</h2>
+      <p class="supporting-copy">Pulling the latest user details from KickOff.</p>
+    </section>
+  } @else if (error()) {
+    <section class="state-card error">
+      <mat-icon>error</mat-icon>
+      <h2>We could not open this profile</h2>
+      <p class="supporting-copy">{{ error() }}</p>
+    </section>
+  } @else if (user(); as activeUser) {
+    <section class="profile-page">
+      <article class="panel hero-card">
+        <div class="hero-top">
+          <div class="avatar">
+            @if (activeUser.profilePictureUrl) {
+              <img [src]="activeUser.profilePictureUrl" [alt]="activeUser.userName + ' profile picture'" />
+            } @else {
+              <span>{{ profileInitials }}</span>
+            }
+          </div>
+
+          <div class="identity">
+            <p class="eyebrow">{{ isOwnProfile ? 'Your Profile' : 'Creator Profile' }}</p>
+            <h1>{{ activeUser.userName }}</h1>
+            <p class="supporting-copy">
+              {{
+                isOwnProfile
+                  ? 'This is how your account appears inside KickOff.'
+                  : 'A quick look at this member and how connected they already are on the platform.'
+              }}
+            </p>
+
+            <div class="badge-row">
+              <span class="pill accent">{{ activeUser.email }}</span>
+
+              @for (roleBadge of roleBadges; track trackRoleBadge($index, roleBadge)) {
+                @if (roleBadge.isBacker) {
+                  <span
+                    class="pill"
+                    tabindex="0"
+                    [attr.aria-label]="roleBadge.ariaLabel"
+                    [attr.title]="backerRoleTooltip(roleBadge.backedProjects)">
+                    {{ roleBadge.label }}
+                  </span>
+                } @else {
+                  <span class="pill">{{ roleBadge.label }}</span>
+                }
+              }
+
+              @if (stateLabel) {
+                <span class="pill muted">{{ stateLabel }}</span>
+              }
+            </div>
+          </div>
+
+          <div class="hero-actions">
+            @if (isOwnProfile) {
+              <a [routerLink]="['/account-settings']" class="primary-btn">Manage Account</a>
+            }
+
+            @if (canFollowProfile) {
+              <button
+                type="button"
+                class="primary-btn"
+                [class.ghost-btn]="isFollowingProfile"
+                [disabled]="isFollowPending()"
+                (click)="toggleFollow()">
+                {{
+                  isFollowPending()
+                    ? (isFollowingProfile ? 'Updating...' : 'Following...')
+                    : (isFollowingProfile ? 'Following' : 'Follow Creator')
+                }}
+              </button>
+            } @else if (shouldPromptFollowSignIn) {
+              <a [routerLink]="['/auth/login']" class="ghost-btn">Sign in to Follow</a>
+            }
+
+            @if (canMessageProfile && activeUser.idP) {
+              <a [routerLink]="['/chat', activeUser.idP]" class="ghost-btn">Message</a>
+            }
+
+            @if (canCreateProjects) {
+              <a [routerLink]="['/project', 'create']" class="ghost-btn">Start a Project</a>
+            }
+
+            @if (followError()) {
+              <p class="action-note">{{ followError() }}</p>
+            }
+          </div>
+        </div>
+
+        <div class="metrics-grid">
+          <app-profile-metrics
+            label="Projects"
+            [value]="projectCount"
+            description="Ideas this account is attached to.">
+          </app-profile-metrics>
+
+          <app-profile-metrics
+            label="Followers"
+            [value]="followerCount"
+            description="People keeping an eye on updates."
+            [interactive]="true"
+            [expanded]="isConnectionViewActive('followers')"
+            [toggleLabel]="isConnectionViewActive('followers') ? 'Hide list' : 'View list'"
+            (pressed)="toggleConnectionView('followers')">
+          </app-profile-metrics>
+
+          <app-profile-metrics
+            label="Following"
+            [value]="followingCount"
+            description="Creators and teams this user is tracking."
+            [interactive]="true"
+            [expanded]="isConnectionViewActive('following')"
+            [toggleLabel]="isConnectionViewActive('following') ? 'Hide list' : 'View list'"
+            (pressed)="toggleConnectionView('following')">
+          </app-profile-metrics>
+
+          @if (activeConnectionView()) {
+            <section class="metrics-detail-panel">
+              <div class="connection-panel-header">
+                <div>
+                  <p class="eyebrow">{{ activeConnectionTitle }}</p>
+                  <h2>{{ activeConnectionTitle }}</h2>
+                </div>
+
+                <p class="panel-copy">{{ activeConnectionDescription }}</p>
+              </div>
+
+              @if (activeConnections.length > 0) {
+                <div class="connection-grid">
+                  @for (connection of activeConnections; track trackConnection($index, connection)) {
+                    <app-user-floating-panel [userId]="connection.idP" [previewUser]="connection">
+                      <a class="connection-card" [routerLink]="['/profile', connection.idP]">
+                        @if (connection.profilePictureUrl) {
+                          <img
+                            [src]="connection.profilePictureUrl"
+                            [alt]="connection.userName + ' profile picture'"
+                            class="connection-avatar" />
+                        } @else {
+                          <div class="connection-avatar fallback">{{ profileConnectionInitials(connection.userName) }}</div>
+                        }
+
+                        <div class="connection-copy">
+                          <strong>{{ connection.userName }}</strong>
+                          <span>{{ formatLabel(connection.state) }}</span>
+                        </div>
+                      </a>
+                    </app-user-floating-panel>
+                  }
+                </div>
+              } @else {
+                <div class="connection-empty-state">
+                  <p>{{ activeConnectionEmptyMessage }}</p>
+                </div>
+              }
+            </section>
+          }
+        </div>
+      </article>
+
+      <article class="panel detail-card">
+        <p class="eyebrow">Snapshot</p>
+        <h2>Account details</h2>
+
+        <dl class="detail-list">
+          <div>
+            <dt>Display name</dt>
+            <dd>{{ activeUser.userName }}</dd>
+          </div>
+
+          <div>
+            <dt>Contact</dt>
+            <dd>{{ activeUser.email }}</dd>
+          </div>
+
+          <div>
+            <dt>Primary role</dt>
+            <dd>{{ displayRoles.length > 0 ? displayRoles[0] : 'Member' }}</dd>
+          </div>
+
+          <div>
+            <dt>Profile state</dt>
+            <dd>{{ stateLabel ?? 'Active' }}</dd>
+          </div>
+        </dl>
+      </article>
+
+      <article class="panel detail-card">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Projects</p>
+            <h2>Published work</h2>
+          </div>
+
+          <p class="supporting-copy">
+            @if (projectCount > 0) {
+              Browse the projects this producer has already put into motion on KickOff.
+            } @else if (isOwnProfile) {
+              You have not published a project yet.
+            } @else {
+              This producer has not published any projects yet.
+            }
+          </p>
+        </div>
+
+        @if (projectCount > 0) {
+          <div class="profile-project-grid">
+            @for (project of activeUser.projects ?? []; track trackProject($index, project)) {
+              <project-card [project]="project"></project-card>
+            }
+          </div>
+        } @else {
+          <div class="empty-state">
+            <mat-icon>rocket_launch</mat-icon>
+            <p>
+              {{
+                isOwnProfile
+                  ? 'Start a project to make this section come alive.'
+                  : 'Check back after this producer launches something new.'
+              }}
+            </p>
+          </div>
+        }
+      </article>
+    </section>
+  }
+</main>

@@ -1,0 +1,214 @@
+<header id="header">
+  <a class="brand-link" [routerLink]="['/']" aria-label="Go to KickOff home">
+    <img
+      id="header-logo"
+      src="../../../../assets/images/KickOffLogo-transparent.png"
+      alt="KickOff logo" />
+
+    <div class="brand-copy">
+      <span class="eyebrow">KickOff</span>
+      <strong>Meet the right people for your next build.</strong>
+    </div>
+  </a>
+
+  <div class="search-hub">
+    <form class="search-form" (ngSubmit)="applyBrowseFilters()">
+      <label class="search-field">
+        <span class="search-label">Search projects</span>
+        <input
+          type="search"
+          name="headerKeyword"
+          [(ngModel)]="keyword"
+          placeholder="Search by goal or keyword"
+          (blur)="onKeywordBlur()" />
+      </label>
+    </form>
+
+    <div class="search-hover-panel">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">Explore</p>
+          <strong>Shape the feed from the header</strong>
+        </div>
+
+        @if (activeFilters.length > 0) {
+          <p class="panel-copy">{{ activeFilters.length }} active filter{{ activeFilters.length === 1 ? '' : 's' }}</p>
+        } @else {
+          <p class="panel-copy">Search stays pinned here. Extra controls open on hover.</p>
+        }
+      </div>
+
+      <div class="browse-toolbar">
+        <div class="quick-filters" aria-label="Project state quick filters">
+          @for (state of stateOptions; track state) {
+            <button
+              type="button"
+              class="quick-filter"
+              [class.is-active]="selectedState === state"
+              (click)="setState(state)">
+              {{ state }}
+            </button>
+          }
+        </div>
+
+        <div class="sort-toggle" aria-label="Project sort direction">
+          <button
+            type="button"
+            class="segment-btn"
+            [class.is-active]="sortNewest"
+            (click)="setSortNewest(true)">
+            Newest
+          </button>
+          <button
+            type="button"
+            class="segment-btn"
+            [class.is-active]="!sortNewest"
+            (click)="setSortNewest(false)">
+            Oldest
+          </button>
+        </div>
+      </div>
+
+      <div class="search-grid">
+        <label class="field">
+          <span>State</span>
+          <select
+            name="headerState"
+            [ngModel]="selectedState"
+            (ngModelChange)="setState($event)">
+            @for (state of stateOptions; track state) {
+              <option [value]="state">{{ state }}</option>
+            }
+          </select>
+        </label>
+
+        <label class="field">
+          <span>Sort</span>
+          <select
+            name="headerSortDirection"
+            [ngModel]="sortNewest ? 'newest' : 'oldest'"
+            (ngModelChange)="setSortNewest($event === 'newest')">
+            <option value="newest">Newest first</option>
+            <option value="oldest">Oldest first</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>Page Size</span>
+          <select
+            name="headerPageSize"
+            [ngModel]="pageSize"
+            (ngModelChange)="onPageSizeChange($event)">
+            @for (size of pageSizeOptions; track size) {
+              <option [ngValue]="size">{{ size }} per page</option>
+            }
+          </select>
+        </label>
+
+        <div class="panel-actions">
+          <button type="button" class="search-btn ghost" (click)="resetBrowseFilters()">Reset</button>
+          <button type="button" class="search-btn primary" (click)="applyBrowseFilters()">Apply</button>
+        </div>
+      </div>
+
+      @if (activeFilters.length > 0) {
+        <div class="active-filter-list">
+          @for (filter of activeFilters; track filter) {
+            <span class="filter-chip">{{ filter }}</span>
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="header-actions">
+    @if (isLoggedIn) {
+
+      <div class="notification-hub">
+        <button type="button" class="header-btn ghost chat-btn">
+          <span>Alerts</span>
+
+          @if (unreadProjectNotificationsCount() > 0) {
+            <span class="header-badge">{{ unreadProjectNotificationsLabel }}</span>
+          }
+        </button>
+
+        <div class="notification-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Project Alerts</p>
+              <strong>Updates from followed projects</strong>
+            </div>
+
+            @if (unreadProjectNotificationsCount() > 0) {
+              <button type="button" class="search-btn ghost" (click)="markAllProjectNotificationsAsRead()">
+                Mark all read
+              </button>
+            } @else {
+              <p class="panel-copy">You are all caught up.</p>
+            }
+          </div>
+
+          @if (notificationsLoading()) {
+            <div class="notification-empty-state">
+              <span>Loading project alerts...</span>
+            </div>
+          } @else if (notificationsError()) {
+            <div class="notification-empty-state">
+              <span>{{ notificationsError() }}</span>
+            </div>
+          } @else if (projectNotifications().length > 0) {
+            <div class="notification-list">
+              @for (notification of projectNotifications(); track trackProjectNotification($index, notification)) {
+                <button
+                  type="button"
+                  class="notification-card"
+                  [class.is-unread]="!notification.isRead"
+                  (click)="openProjectNotification(notification)">
+                  <div class="notification-copy">
+                    <strong>{{ notification.projectName }}</strong>
+                    <span>{{ notification.title }}</span>
+                    <small>{{ notification.message }}</small>
+                  </div>
+
+                  @if (notification.createdAt) {
+                    <time>{{ notification.createdAt | date: 'short' }}</time>
+                  }
+                </button>
+              }
+            </div>
+          } @else {
+            <div class="notification-empty-state">
+              <span>Follow a project to start seeing creator updates here.</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <button type="button" class="header-btn ghost chat-btn" (click)="toChat()">
+        <span>Chats</span>
+
+        @if (unreadChatsCount > 0) {
+          <span class="header-badge">{{ unreadChatsLabel }}</span>
+        }
+      </button>
+
+      @if (canCreateProjects) {
+        <button type="button" class="header-btn primary" (click)="toProjects()">
+          Projects
+        </button>
+      } @else {
+        <button type="button" class="header-btn primary" (click)="toBecomeProducer()">
+          Become a Producer
+        </button>
+      }
+
+      <pfp></pfp>
+    } @else {
+      <button type="button" class="header-btn ghost" (click)="toLogin()">Log In</button>
+      <button type="button" class="header-btn primary" (click)="toRegister()">
+        Create Account
+      </button>
+    }
+  </div>
+</header>

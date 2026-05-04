@@ -1,0 +1,435 @@
+
+// Include theming for Angular Material with `mat.theme()`.
+// This Sass mixin will define CSS variables that are used for styling Angular Material
+// components according to the Material 3 design spec.
+// Learn more about theming and how to use it for your application's
+// custom components at https://material.angular.dev/guide/theming
+@use '@angular/material' as mat;
+@import "primeicons/primeicons.css";
+
+html {
+  height: 100%;
+  @include mat.theme((
+    color: (
+      primary: mat.$azure-palette,
+      tertiary: mat.$blue-palette,
+    ),
+    typography: Roboto,
+    density: 0,
+  ));
+}
+
+body {
+  // Default the application to a light color theme. This can be changed to
+  // `dark` to enable the dark color theme, or to `light dark` to defer to the
+  // user's system settings.
+
+  // Set a default background, font and text colors for the application using
+  // Angular Material's system-level CSS variables. Learn more about these
+  // variables at https://material.angular.dev/guide/system-variables
+  background-color: var(--mat-sys-surface);
+  color: #f4f8fa;
+  font: var(--mat-sys-body-medium);
+
+  // Reset the user agent margin.
+  margin: 0;
+  height: 100%;
+}
+html,
+body {
+    width: 100%;
+    height: 100vh;
+
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+* {
+    max-width: 100%;
+}
+
+.wrapper {
+    justify-self: center;
+    align-self: center;
+}
+
+.left {
+    display: flex;
+    flex-direction: column;
+    float: left;
+}
+
+.right {
+    display: flex;
+    flex-direction: column;
+    float: right;
+}
+
+section {
+    margin: 0.1em;
+    border-radius: 10em;
+
+    background-color: rgb(3, 42, 42);
+}
+
+.home-shell .active-filters {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: flex-start;
+    padding: 1rem 1.1rem;
+    border-radius: 22px;
+    border: 1px solid rgba(162, 255, 245, 0.12);
+    background: rgba(162, 255, 245, 0.05);
+}
+
+.home-shell .active-filter-list,
+.home-shell .results-meta-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    justify-content: flex-end;
+}
+
+.home-shell .filter-chip,
+.home-shell .results-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.45rem 0.8rem;
+    border-radius: 999px;
+    border: 1px solid rgba(162, 255, 245, 0.16);
+    background: rgba(162, 255, 245, 0.08);
+    color: #dffcf9;
+    font-size: 0.84rem;
+    font-weight: 700;
+}
+
+.home-shell .state-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.45rem 0.75rem;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.home-shell .state-pill.state-active {
+    background: rgba(108, 237, 175, 0.14);
+    color: #8ff5c4;
+    border-color: rgba(108, 237, 175, 0.26);
+}
+
+.home-shell .state-pill.state-proposed {
+    background: rgba(117, 192, 255, 0.14);
+    color: #a8d7ff;
+    border-color: rgba(117, 192, 255, 0.22);
+}
+
+.home-shell .state-pill.state-onhold {
+    background: rgba(255, 209, 115, 0.15);
+    color: #ffd993;
+    border-color: rgba(255, 209, 115, 0.22);
+}
+
+.home-shell .state-pill.state-completed {
+    background: rgba(173, 148, 255, 0.16);
+    color: #d2c2ff;
+    border-color: rgba(173, 148, 255, 0.22);
+}
+
+.home-shell .state-pill.state-inactive,
+.home-shell .state-pill.state-cancelled {
+    background: rgba(255, 161, 161, 0.14);
+    color: #ffc0c0;
+    border-color: rgba(255, 161, 161, 0.22);
+}
+
+.home-shell .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+}
+
+.home-shell .project-skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    padding: 1rem;
+    border-radius: 24px;
+    border: 1px solid rgba(156, 245, 240, 0.1);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.home-shell .skeleton-media,
+.home-shell .skeleton-line {
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.05),
+        rgba(162, 255, 245, 0.18),
+        rgba(255, 255, 255, 0.05)
+    );
+    background-size: 200% 100%;
+    animation: home-shimmer 1.35s linear infinite;
+}
+
+.home-shell .skeleton-media {
+    aspect-ratio: 16 / 9;
+    border-radius: 18px;
+}
+
+.home-shell .skeleton-line {
+    height: 0.92rem;
+    border-radius: 999px;
+}
+
+.home-shell .skeleton-line.short {
+    width: 38%;
+}
+
+.home-shell .skeleton-line.title {
+    width: 72%;
+    height: 1.15rem;
+}
+
+@media (max-width: 1180px) {
+    .home-shell .active-filters,
+    .home-shell .results-meta {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .home-shell .active-filter-list,
+    .home-shell .results-meta-tags {
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 760px) {
+    .home-shell .projects-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@keyframes home-shimmer {
+    from {
+        background-position: 200% 0;
+    }
+
+    to {
+        background-position: -200% 0;
+    }
+}
+
+project-view {
+    .wrap-anywhere {
+        overflow-wrap: anywhere;
+    }
+
+    .hero-copy,
+    .hero-heading,
+    .follow-preferences,
+    .follow-preferences-copy,
+    .follow-toggle span,
+    .hero-media,
+    .detail-card,
+    .section-heading,
+    .section-heading.section-heading-wide > div,
+    .content-stack,
+    .list-stack,
+    .update-composer,
+    .update-entry,
+    .updates-list,
+    .field-stack,
+    .internal-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .badge-row,
+    .hero-actions,
+    .update-meta,
+    .update-action-row,
+    .inline-actions,
+    .chip-row,
+    .mono-chip-row {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .hero-metrics article,
+    .detail-card,
+    .media-note,
+    .update-composer,
+    .update-entry {
+        border-radius: 20px;
+    }
+
+    .hero-metrics article,
+    .detail-card,
+    .follow-toggle,
+    .media-note,
+    .update-composer,
+    .update-entry,
+    .signal-card,
+    .meta-list div {
+        background: rgba(255, 255, 255, 0.03);
+    }
+
+    .follow-toggle,
+    .media-note,
+    .update-composer,
+    .update-entry {
+        border: 1px solid rgba(143, 236, 236, 0.08);
+    }
+
+    .section-heading.section-heading-wide > *,
+    .update-heading > * {
+        min-width: 0;
+    }
+}
+
+app-chat-component {
+    .section-heading {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        align-items: end;
+    }
+
+    .eyebrow,
+    .supporting-copy,
+    h2,
+    h3,
+    p,
+    strong,
+    time {
+        margin: 0;
+    }
+
+    .eyebrow {
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: #83e7de;
+    }
+
+    h2,
+    h3 {
+        color: #effffe;
+    }
+
+    .supporting-copy {
+        max-width: 68ch;
+        color: rgba(231, 251, 251, 0.8);
+        line-height: 1.65;
+    }
+
+    .primary-btn,
+    .ghost-btn {
+        border-radius: 999px;
+        padding: 0.9rem 1.3rem;
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+
+    .primary-btn {
+        border: 0;
+        background: linear-gradient(135deg, #a2fff5, #42d7c9);
+        color: #042022;
+
+        &:hover {
+            transform: translateY(-1px);
+        }
+
+        &:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+        }
+    }
+
+    .ghost-btn {
+        border: 1px solid rgba(162, 255, 245, 0.2);
+        background: rgba(162, 255, 245, 0.06);
+        color: #c4fffa;
+
+        &:hover:not(:disabled) {
+            transform: translateY(-1px);
+            border-color: rgba(162, 255, 245, 0.36);
+        }
+
+        &:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+        }
+    }
+
+    .compact-btn {
+        padding-inline: 1rem;
+    }
+
+    .channel-avatar,
+    .conversation-avatar,
+    .message-avatar {
+        object-fit: cover;
+        flex-shrink: 0;
+    }
+
+    .channel-avatar,
+    .message-avatar {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 16px;
+    }
+
+    .conversation-avatar {
+        width: 3.25rem;
+        height: 3.25rem;
+        border-radius: 18px;
+    }
+
+    .fallback {
+        display: grid;
+        place-items: center;
+        background: linear-gradient(135deg, rgba(245, 193, 116, 0.24), rgba(130, 234, 227, 0.22));
+        color: #f9ffff;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+    }
+
+    .state-card {
+        display: flex;
+        flex-direction: column;
+        gap: 0.7rem;
+        padding: 1.2rem;
+
+        &.error {
+            border-color: rgba(255, 145, 145, 0.24);
+        }
+    }
+
+    .compact-state {
+        text-align: center;
+    }
+
+    .status-dot {
+        width: 0.5rem;
+        height: 0.5rem;
+        border-radius: 999px;
+        background: rgba(231, 251, 251, 0.45);
+        flex-shrink: 0;
+    }
+
+    .live .status-dot,
+    .channel-status.live .status-dot {
+        background: #86dfdc;
+    }
+}
+

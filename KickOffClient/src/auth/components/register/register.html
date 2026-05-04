@@ -1,0 +1,158 @@
+<main class="auth-shell">
+  <section class="auth-panel">
+    <aside class="auth-story">
+      <p class="eyebrow">KickOff Onboarding</p>
+      <h1>Build a profile that makes the right teammates curious.</h1>
+      <p class="supporting-copy">
+        Create your account to showcase your interests, track projects, and step into
+        collaboration without friction.
+      </p>
+
+      <div class="story-points">
+        <article>
+          <strong>Show Up Well</strong>
+          <span>Create a recognizable profile and make it easier for people to trust your work.</span>
+        </article>
+
+        <article>
+          <strong>Find Your Team</strong>
+          <span>Stay close to promising builders, producers, and projects across the platform.</span>
+        </article>
+
+        <article>
+          <strong>Move Faster</strong>
+          <span>Once you are in, the rest of the user journey can feel more connected and personal.</span>
+        </article>
+      </div>
+    </aside>
+
+    <section class="auth-card">
+      <div class="auth-header">
+        <p class="eyebrow">Create Account</p>
+        <h2>Join KickOff</h2>
+        <p class="supporting-copy">A few details now, and your account is ready for the rest.</p>
+      </div>
+
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="auth-form">
+        <label class="field">
+          <span>Username</span>
+          <input
+            type="text"
+            formControlName="username"
+            placeholder="Choose a username"
+            autocomplete="username"
+            class="form-input"
+            [class.form-input--server-error]="hasServerFieldError('username')"
+            (input)="clearServerFieldError('username')" />
+
+          @if (registerForm.controls.username.touched && registerForm.controls.username.invalid) {
+            <small class="error-text">Username must be at least 3 characters.</small>
+          } @else if (serverFieldErrors.username) {
+            <small class="error-text">{{ serverFieldErrors.username }}</small>
+          }
+        </label>
+
+        <label class="field">
+          <span>Email</span>
+          <input
+            type="email"
+            formControlName="email"
+            placeholder="you@kickoff.app"
+            autocomplete="email"
+            class="form-input"
+            [class.form-input--server-error]="hasServerFieldError('email')"
+            (input)="clearServerFieldError('email')" />
+
+          @if (registerForm.controls.email.touched && registerForm.controls.email.invalid) {
+            <small class="error-text">Enter a valid email address.</small>
+          } @else if (serverFieldErrors.email) {
+            <small class="error-text">{{ serverFieldErrors.email }}</small>
+          }
+        </label>
+
+        <label class="field">
+          <span>Password</span>
+
+          <div class="password-field">
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              formControlName="password"
+              placeholder="Create a password"
+              autocomplete="new-password"
+              class="form-input"
+              [class.form-input--server-error]="hasServerFieldError('password')"
+              (input)="clearServerFieldError('password')" />
+
+            <button type="button" class="password-toggle" (click)="showPassword = !showPassword">
+              {{ showPassword ? 'Hide' : 'Show' }}
+            </button>
+          </div>
+
+          @if (registerForm.controls.password.touched && registerForm.controls.password.invalid) {
+            <small class="error-text">
+              Use 6+ characters, uppercase, lowercase, and a symbol.
+            </small>
+          } @else if (serverFieldErrors.password) {
+            <small class="error-text">{{ serverFieldErrors.password }}</small>
+          }
+        </label>
+
+        <ul class="password-checklist">
+          @for (check of passwordChecks; track check.label) {
+            <li [class.met]="check.met">{{ check.label }}</li>
+          }
+        </ul>
+
+        <label class="field">
+          <span>Confirm password</span>
+
+          <div class="password-field">
+            <input
+              [type]="showConfirmPassword ? 'text' : 'password'"
+              formControlName="confirmPassword"
+              placeholder="Repeat your password"
+              autocomplete="new-password"
+              class="form-input" />
+
+            <button
+              type="button"
+              class="password-toggle"
+              (click)="showConfirmPassword = !showConfirmPassword">
+              {{ showConfirmPassword ? 'Hide' : 'Show' }}
+            </button>
+          </div>
+
+          @if (registerForm.get('confirmPassword')?.touched && registerForm.getError('passwordMismatch')) {
+            <small class="error-text">Passwords do not match.</small>
+          }
+        </label>
+
+        @if (registerError) {
+          <div class="error-alert" role="alert" aria-live="assertive">
+            @if (registerErrorTitle) {
+              <p class="alert-title">{{ registerErrorTitle }}</p>
+            }
+
+            <p class="alert-message">{{ registerError }}</p>
+
+            @if (registerErrorDetails.length > 0) {
+              <ul class="alert-list">
+                @for (detail of registerErrorDetails; track detail) {
+                  <li>{{ detail }}</li>
+                }
+              </ul>
+            }
+          </div>
+        }
+
+        <button type="submit" [disabled]="registerForm.invalid || isSubmitting" class="primary-btn">
+          {{ isSubmitting ? 'Creating account...' : 'Create Account' }}
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        <p>Already have an account? <a [routerLink]="['/auth', 'login']">Log in</a></p>
+      </div>
+    </section>
+  </section>
+</main>

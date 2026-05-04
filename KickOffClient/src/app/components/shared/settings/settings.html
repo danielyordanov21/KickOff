@@ -1,0 +1,33 @@
+<div class="settings-layout">
+    <section id="settings-names">
+        @for (group of groupedSettings() | keyvalue; track group.key) {
+            <div [class.selected-group]="selectedGroup() === group.key">
+                <div class="setting-name">
+                    <h4 (click)="selectedGroup.set(selectedGroup() === group.key ? null : group.key)">{{ group.key }}</h4>
+                    @for (setting of group.value; track setting.Name) {
+                        <div>
+                            {{ setting.Name }}
+                        </div>
+                    }
+                </div>
+                <hr class="divider" />
+            </div>
+        }
+    </section>
+    <main>
+        <section class="settings-container">
+            @for (setting of filteredSettings(); track setting.Name) {
+                <div class="setting-item">
+                    <h3>{{ setting.Name }}</h3>
+                    @if (setting.Description) {
+                      <p>{{ setting.Description }}</p>
+                    }
+                    @if (setting.HoverText) {
+                      <p class="hover-text">{{ setting.HoverText }}</p>
+                    }
+                    <p>Value: {{ setting.Value }}</p>
+                </div>
+            }
+        </section>
+    </main>
+</div>

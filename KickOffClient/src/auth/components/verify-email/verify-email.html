@@ -1,0 +1,107 @@
+<main class="auth-shell">
+  <section class="auth-panel">
+    <aside class="auth-story">
+      <p class="eyebrow">KickOff Verification</p>
+      <h1>Make sure the right inbox belongs to you.</h1>
+      <p class="supporting-copy">
+        Verifying your address helps protect your account and keeps your future notifications
+        pointed at the right place.
+      </p>
+
+      <div class="story-points">
+        <article>
+          <strong>Secure Access</strong>
+          <span>Verified email keeps account recovery and future sign-ins easier to protect.</span>
+        </article>
+
+        <article>
+          <strong>Reliable Updates</strong>
+          <span>Project alerts and account messages land where you expect them.</span>
+        </article>
+
+        <article>
+          <strong>Quick Recovery</strong>
+          <span>Confirmed email keeps password resets and account help within reach.</span>
+        </article>
+      </div>
+    </aside>
+
+    <section class="auth-card">
+      <div class="auth-header">
+        <p class="eyebrow">Verify Email</p>
+        <h2>Verify your email whenever you are ready</h2>
+        <p class="supporting-copy">
+          @if (email) {
+            We are verifying <strong>{{ email }}</strong>.
+          } @else {
+            Verify your email whenever you are ready to keep KickOff secure.
+          }
+        </p>
+      </div>
+
+      @if (verificationMessage && !verificationError) {
+        <div
+          class="success-alert"
+          [class.success-alert--preview]="verificationPreviewUrl && emailDeliveryEnabled === false"
+          role="status"
+          aria-live="polite">
+          @if (verificationStatusTitle) {
+            <p class="alert-title">{{ verificationStatusTitle }}</p>
+          }
+
+          <p class="alert-message">{{ verificationMessage }}</p>
+
+          @if (verificationStatusHint) {
+            <p class="alert-hint">{{ verificationStatusHint }}</p>
+          }
+        </div>
+      }
+
+      @if (verificationError) {
+        <div class="error-alert" role="alert" aria-live="assertive">
+          {{ verificationError }}
+        </div>
+      }
+
+      <div class="verification-actions">
+        <button
+          type="button"
+          class="primary-btn"
+          [disabled]="isVerifying"
+          (click)="goToLogin()">
+          {{ emailConfirmed ? 'Continue to sign in' : 'Sign in now' }}
+        </button>
+
+        @if (email && !emailConfirmed) {
+          <button
+            type="button"
+            class="secondary-btn"
+            [disabled]="isResending || isVerifying"
+            (click)="resendConfirmation()">
+            {{ resendActionLabel }}
+          </button>
+        }
+      </div>
+
+      @if (verificationPreviewUrl) {
+        <div class="preview-card">
+          <p class="preview-title">{{ previewCardTitle }}</p>
+          <p class="preview-copy">
+            @if (emailDeliveryEnabled === false) {
+              Email delivery is unavailable locally, so you can use the latest verification link directly.
+            } @else {
+              A local preview of the latest verification link is ready if you want to keep testing in one place.
+            }
+          </p>
+          <a [href]="verificationPreviewUrl" class="preview-link">Open latest verification link</a>
+        </div>
+      }
+
+      <div class="auth-footer">
+        <p>
+          Need a different account? <a [routerLink]="['/auth', 'register']">Create a new one</a>
+        </p>
+      </div>
+    </section>
+  </section>
+</main>

@@ -1,0 +1,69 @@
+<button
+  id="pfp-settings-Btn"
+  [matMenuTriggerFor]="pfpMenu"
+  [attr.aria-label]="isLoggedIn ? 'Open account menu' : 'Open sign in menu'">
+  @if (user?.profilePictureUrl) {
+    <img [src]="user?.profilePictureUrl" [alt]="user?.userName + ' profile picture'" />
+  } @else if (isLoggedIn) {
+    <span class="avatar-fallback">{{ userInitials }}</span>
+  } @else {
+    <mat-icon>person</mat-icon>
+  }
+</button>
+
+<mat-menu #pfpMenu="matMenu" xPosition="before">
+  @if (isLoggedIn) {
+    <div class="menu-account">
+      <strong>{{ user?.userName }}</strong>
+      <span>{{ user?.email }}</span>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <button (click)="redirectToProfile()" mat-menu-item>
+      <mat-icon>person</mat-icon>
+      <span>Profile</span>
+    </button>
+
+    <button (click)="redirectToSponsors()" mat-menu-item>
+      <mat-icon>volunteer_activism</mat-icon>
+      <span>Sponsors</span>
+    </button>
+
+    <button (click)="redirectToSettings()" mat-menu-item>
+      <mat-icon>settings</mat-icon>
+      <span>Account</span>
+    </button>
+
+    @if (canCreateProjects) {
+      <button (click)="redirectToProjectCreate()" mat-menu-item>
+        <mat-icon>rocket_launch</mat-icon>
+        <span>Create Project</span>
+      </button>
+    }
+
+    <mat-divider></mat-divider>
+
+    <button mat-menu-item (click)="logout()">
+      <mat-icon>logout</mat-icon>
+      <span>Logout</span>
+    </button>
+  } @else {
+    <div class="menu-account guest">
+      <strong>Welcome to KickOff</strong>
+      <span>Sign in to manage your profile and projects.</span>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <button mat-menu-item (click)="login()">
+      <mat-icon>login</mat-icon>
+      <span>Log In</span>
+    </button>
+
+    <button mat-menu-item (click)="register()">
+      <mat-icon>person_add</mat-icon>
+      <span>Create Account</span>
+    </button>
+  }
+</mat-menu>

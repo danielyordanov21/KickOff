@@ -1,0 +1,288 @@
+.projects-shell {
+  --panel-border: rgba(156, 245, 240, 0.12);
+  --panel-bg: linear-gradient(180deg, rgba(8, 43, 44, 0.88), rgba(4, 19, 21, 0.96));
+  --copy: rgba(231, 251, 251, 0.78);
+  min-height: 100vh;
+  padding: 1.5rem 1rem 2rem;
+  background:
+    radial-gradient(circle at top left, rgba(74, 223, 211, 0.16), transparent 26%),
+    radial-gradient(circle at 80% 20%, rgba(252, 188, 98, 0.18), transparent 24%),
+    linear-gradient(180deg, #041617 0%, #072223 45%, #031113 100%);
+}
+
+h1,
+h2,
+h3,
+p,
+strong {
+  margin: 0;
+}
+
+.eyebrow,
+.summary-label,
+.meta-label {
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.eyebrow,
+.summary-label {
+  color: #8eece3;
+}
+
+.meta-label {
+  color: rgba(231, 251, 251, 0.66);
+}
+
+h1 {
+  color: #f4ffff;
+  font-size: clamp(2.2rem, 5vw, 3.6rem);
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+}
+
+h2,
+h3,
+.project-meta strong {
+  color: #f4ffff;
+}
+
+.supporting-copy,
+.project-description,
+.summary-card p,
+.empty-state {
+  color: var(--copy);
+  line-height: 1.6;
+}
+
+.panel,
+.state-card {
+  border: 1px solid var(--panel-border);
+  border-radius: 28px;
+  background: var(--panel-bg);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.28);
+}
+
+.primary-btn,
+.ghost-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1.15rem;
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.primary-btn {
+  border: 0;
+  background: linear-gradient(135deg, #a2fff5, #42d7c9);
+  color: #042022;
+}
+
+.ghost-btn {
+  border: 1px solid rgba(162, 255, 245, 0.2);
+  background: rgba(162, 255, 245, 0.06);
+  color: #c4fffa;
+}
+
+.small-btn {
+  padding: 0.62rem 0.92rem;
+  font-size: 0.84rem;
+}
+
+.state-card,
+.empty-state {
+  display: grid;
+  place-items: center;
+  gap: 0.75rem;
+  text-align: center;
+}
+
+.state-card {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.state-card.error,
+.inline-notice {
+  border-color: rgba(255, 190, 138, 0.2);
+}
+
+.projects-page {
+  display: grid;
+  max-width: 1180px;
+  margin: 0 auto;
+  gap: 1rem;
+}
+
+.hero-card,
+.repository-card,
+.summary-card,
+.project-meta > div,
+.inline-notice {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.hero-card,
+.repository-card {
+  padding: clamp(1.2rem, 2.8vw, 1.9rem);
+}
+
+.hero-actions,
+.section-heading,
+.project-heading,
+.project-actions,
+.inline-notice {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.summary-card,
+.project-meta > div {
+  padding: 1rem;
+  border: 1px solid var(--panel-border);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.summary-card strong {
+  color: #f4ffff;
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.project-list {
+  display: grid;
+}
+
+.project-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1rem;
+  padding: 1.15rem 0;
+  border-top: 1px solid rgba(156, 245, 240, 0.1);
+}
+
+.project-row:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.project-main {
+  display: grid;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.title-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  align-items: center;
+}
+
+.project-link {
+  color: #aefef6;
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.state-pill {
+  padding: 0.35rem 0.72rem;
+  border: 1px solid rgba(156, 245, 240, 0.18);
+  border-radius: 999px;
+  background: rgba(156, 245, 240, 0.08);
+  color: #dffcf9;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.project-actions {
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.project-meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(9rem, 1fr));
+  gap: 0.75rem;
+  align-content: start;
+}
+
+.empty-state {
+  min-height: 220px;
+  padding: 1.5rem;
+  border: 1px dashed rgba(162, 255, 245, 0.14);
+  border-radius: 24px;
+}
+
+.empty-state p {
+  max-width: 32rem;
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 980px) {
+  .summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .project-row,
+  .project-meta {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .section-heading,
+  .project-heading,
+  .project-actions,
+  .inline-notice {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 640px) {
+  .projects-shell {
+    padding-top: 1rem;
+    padding-inline: 0.75rem;
+  }
+
+  .panel,
+  .state-card {
+    border-radius: 24px;
+  }
+
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .primary-btn,
+  .ghost-btn {
+    width: 100%;
+  }
+}

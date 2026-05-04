@@ -1,0 +1,269 @@
+<main class="chat-shell">
+  <div class="chat-layout">
+    <aside class="chat-side">
+      <section class="panel channels-panel">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Inbox</p>
+            <h2>Recent chats</h2>
+          </div>
+
+          @if (activeRecipientId()) {
+            <button type="button" class="ghost-btn compact-btn" (click)="goToInbox()">
+              All chats
+            </button>
+          }
+        </div>
+
+        <p class="supporting-copy">
+          The same collaborative energy as the home feed, just focused on one-to-one momentum.
+        </p>
+
+        @if (isBootstrapping()) {
+          <div class="state-card compact-state">
+            <p class="eyebrow">Loading</p>
+            <h3>Connecting your inbox...</h3>
+            <p class="supporting-copy">We are syncing your channels and recent messages.</p>
+          </div>
+        } @else if (error() && !hasChannels) {
+          <div class="state-card compact-state error">
+            <p class="eyebrow">Unavailable</p>
+            <h3>Chat is not ready yet</h3>
+            <p class="supporting-copy">{{ error() }}</p>
+            <button type="button" class="ghost-btn compact-btn" (click)="retry()">Try again</button>
+          </div>
+        } @else if (hasChannels) {
+          <div class="channel-list">
+            @for (channel of channels(); track trackChannel($index, channel)) {
+              <button
+                type="button"
+                class="channel-card"
+                [class.active]="selectedChannel()?.url === channel.url"
+                (click)="openChannel(channel)">
+                @if (channelAvatar(channel); as avatarUrl) {
+                  <img
+                    [src]="avatarUrl"
+                    [alt]="channelTitle(channel) + ' profile picture'"
+                    class="channel-avatar" />
+                } @else {
+                  <div class="channel-avatar fallback">{{ channelInitials(channel) }}</div>
+                }
+
+                <div class="channel-copy">
+                  <strong>{{ channelTitle(channel) }}</strong>
+                  <span class="channel-status" [class.live]="channelPresenceLive(channel)">
+                    <span class="status-dot"></span>
+                    {{ channelPresence(channel) }}
+                  </span>
+                  <span class="channel-preview">{{ channelPreview(channel) }}</span>
+                </div>
+
+                <div class="channel-meta">
+                  <time>{{ channelTimestamp(channel) | date: 'shortTime' }}</time>
+
+                  @if (channelUnreadCount(channel) > 0) {
+                    <span class="unread-badge">{{ channelUnreadCount(channel) }}</span>
+                  }
+                </div>
+              </button>
+            }
+          </div>
+        } @else {
+          <div class="state-card compact-state">
+            <p class="eyebrow">No Conversations</p>
+            <h3>Your inbox is still empty</h3>
+            <p class="supporting-copy">
+              Open a creator profile and start the first conversation from there.
+            </p>
+            <a class="ghost-btn compact-btn" [routerLink]="['/']">Browse creators</a>
+          </div>
+        }
+      </section>
+    </aside>
+
+    <div class="chat-content">
+      @if (selectedChannel(); as activeChannel) {
+
+
+        <section class="panel message-panel">
+          <div class="section-heading">
+            <div class="conversation-heading">
+              <div class="conversation-person">
+                @if (channelAvatar(activeChannel); as avatarUrl) {
+                  <img
+                    [src]="avatarUrl"
+                    [alt]="channelTitle(activeChannel) + ' profile picture'"
+                    class="conversation-avatar" />
+                } @else {
+                  <div class="conversation-avatar fallback">{{ channelInitials(activeChannel) }}</div>
+                }
+
+                <div class="conversation-copy">
+                  <p class="eyebrow">Messages</p>
+                  <h2>{{ channelTitle(activeChannel) }}</h2>
+                  <p class="supporting-copy status-copy" [class.live]="participantPresenceLive(activeChannel)">
+                    <span class="status-dot"></span>
+                    {{ participantPresence(activeChannel) }}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="conversation-meta">
+              @if (participantProfileLink(activeChannel); as profileLink) {
+                <a class="ghost-btn compact-btn" [routerLink]="profileLink">View profile</a>
+              }
+            </div>
+          </div>
+
+          @if (chatTranslationSummary; as translationSummary) {
+            <p class="translation-summary">{{ translationSummary }}</p>
+          }
+
+          @if (isLoadingMessages()) {
+            <div class="state-card">
+              <p class="eyebrow">Loading</p>
+              <h3>Opening conversation...</h3>
+              <p class="supporting-copy">Pulling recent messages from Sendbird.</p>
+            </div>
+          } @else if (messages().length > 0) {
+            <div class="message-list" #messageList>
+              @for (message of messages(); track trackMessage($index, message)) {
+                <article class="message-row" [class.own]="isOwnMessage(message)">
+                  @if (!isOwnMessage(message)) {
+                    @if (messageAvatar(message); as avatarUrl) {
+                      <img
+                        [src]="avatarUrl"
+                        [alt]="messageSender(message) + ' profile picture'"
+                        class="message-avatar" />
+                    } @else {
+                      <div class="message-avatar fallback">{{ messageInitials(message) }}</div>
+                    }
+                  }
+
+                  <div class="message-bubble">
+                    <div class="message-meta">
+                      <strong>{{ isOwnMessage(message) ? 'You' : messageSender(message) }}</strong>
+                      <time>{{ message.createdAt | date: 'shortTime' }}</time>
+                    </div>
+
+                    @if (imageMessageUrl(message); as imageUrl) {
+                      <a class="message-image-link" [href]="imageUrl" target="_blank" rel="noreferrer">
+                        <img
+                          [src]="imageUrl"
+                          [alt]="imageMessageAlt(message)"
+                          class="message-image" />
+                      </a>
+
+                      @if (messageCaption(message); as caption) {
+                        <p class="message-caption">{{ caption }}</p>
+                      }
+                    } @else {
+                      <p>{{ messageText(message) }}</p>
+
+                      @if (isShowingTranslatedMessage(message)) {
+                        <p class="translation-note">Translated for your chat preference.</p>
+                      }
+
+                      @if (canToggleMessageTranslation(message)) {
+                        <button type="button" class="translation-toggle" (click)="toggleMessageTranslation(message)">
+                          {{ translationToggleLabel(message) }}
+                        </button>
+                      }
+                    }
+
+                    @if (messageVisibility(message); as visibility) {
+                      <span class="message-status" [class.seen]="visibility.state === 'seen'">
+                        <span class="visibility-marker"></span>
+                        {{ visibility.label }}
+                      </span>
+                    }
+                  </div>
+                </article>
+              }
+            </div>
+          } @else {
+            <div class="state-card empty-thread">
+              <p class="eyebrow">Ready</p>
+              <h3>Start the conversation</h3>
+              <p class="supporting-copy">
+                Send the first message and bring this KickOff connection to life.
+              </p>
+            </div>
+          }
+
+          <form class="composer" (ngSubmit)="sendMessage()">
+            @if (starterContextLabel()) {
+              <p class="composer-note">Starter drafted from {{ starterContextLabel() }}.</p>
+            }
+
+            @if (selectedImages().length > 0) {
+              <div class="composer-images">
+                @for (image of selectedImages(); track image.previewUrl; let i = $index) {
+                  <article class="composer-image-card">
+                    <img [src]="image.previewUrl" alt="Selected chat image preview" />
+                    <button type="button" (click)="removeSelectedImage(i)" [disabled]="isSending()">Remove</button>
+                  </article>
+                }
+              </div>
+            }
+
+            <label class="field composer-field" for="chat-draft">
+              <span>Message</span>
+              <textarea
+                id="chat-draft"
+                name="draftMessage"
+                [(ngModel)]="draftMessage"
+                rows="2"
+                (ngModelChange)="handleDraftChange()"
+                (keydown)="handleComposerKeydown($event)"
+                (blur)="handleComposerBlur()"
+                placeholder="Say hello, share context, or line up the next step."></textarea>
+            </label>
+
+            <div class="composer-actions">
+              <label class="ghost-btn compact-btn image-picker" [class.disabled]="isSending() || selectedImages().length >= maxSelectedImages">
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  (change)="onImagesSelected($event)"
+                  [disabled]="isSending() || selectedImages().length >= maxSelectedImages" />
+                Add images
+              </label>
+            </div>
+
+            @if (imageError()) {
+              <p class="action-note">{{ imageError() }}</p>
+            }
+
+            <button
+              type="submit"
+              class="primary-btn composer-submit"
+              [disabled]="isSending() || (!draftMessage.trim() && selectedImages().length === 0)">
+              {{ isSending() ? 'Sending...' : 'Send' }}
+            </button>
+          </form>
+
+          @if (error()) {
+            <p class="action-note">{{ error() }}</p>
+          }
+        </section>
+      } @else if (isBootstrapping()) {
+        <section class="state-card">
+          <p class="eyebrow">Loading</p>
+          <h2>Getting chat ready...</h2>
+          <p class="supporting-copy">One moment while we connect your conversation panel.</p>
+        </section>
+      } @else {
+        <section class="state-card">
+          <p class="eyebrow">Inbox</p>
+          <h2>Select a conversation</h2>
+          <p class="supporting-copy">
+            Pick a chat from the left or visit a profile to start a new one.
+          </p>
+        </section>
+      }
+    </div>
+  </div>
+</main>

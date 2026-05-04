@@ -1,0 +1,42 @@
+@if (shouldShowEmailConfirmation()) {
+  <section class="email-confirmation-shell">
+    <div class="email-confirmation-alert" role="alert" aria-live="polite">
+      <button
+        type="button"
+        class="alert-close"
+        aria-label="Close email verification notice"
+        (click)="dismissEmailConfirmation()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+
+      <div class="alert-copy">
+        <p class="alert-eyebrow">Email Verification</p>
+        <strong>Confirm {{ currentUser()?.email }} to secure your account.</strong>
+        <span>
+          {{ emailConfirmationMessage() ?? 'You can keep using KickOff, but please verify your email soon so account recovery and updates reach the right inbox.' }}
+        </span>
+
+        @if (emailConfirmationError()) {
+          <small class="alert-error">{{ emailConfirmationError() }}</small>
+        }
+      </div>
+
+      <div class="alert-actions">
+        <button
+          type="button"
+          class="alert-btn primary"
+          [disabled]="emailConfirmationResending()"
+          (click)="resendEmailConfirmation()">
+          {{ emailConfirmationResending() ? 'Sending...' : 'Resend Email' }}
+        </button>
+
+        <button
+          type="button"
+          class="alert-btn ghost"
+          (click)="openVerificationPage()">
+          Verification Help
+        </button>
+      </div>
+    </div>
+  </section>
+}

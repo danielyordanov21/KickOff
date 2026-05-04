@@ -1,0 +1,34 @@
+<div class="image-uploader">
+  <div class="uploader-header">
+    <div>
+      <h3>{{ label() }}</h3>
+      <p>{{ helperText() }}</p>
+    </div>
+
+    <label class="upload-btn">
+      <input
+        type="file"
+        accept="image/*"
+        multiple
+        (change)="onFileSelected($event)"
+        [disabled]="images().length >= maxFiles()"
+      />
+      Add Images
+    </label>
+  </div>
+
+  @if (error()) {
+    <p class="upload-error">{{ error() }}</p>
+  }
+
+  @if (images().length > 0) {
+    <div class="image-grid">
+      @for (image of images(); track image.blobName ?? image.previewUrl; let i = $index) {
+        <article class="image-card">
+          <img [src]="image.previewUrl" alt="Selected project image preview" />
+          <button type="button" (click)="removeImage(i)">Remove</button>
+        </article>
+      }
+    </div>
+  }
+</div>

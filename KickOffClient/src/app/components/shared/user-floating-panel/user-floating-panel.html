@@ -1,0 +1,108 @@
+<div
+  class="hover-anchor"
+  cdkOverlayOrigin
+  #origin="cdkOverlayOrigin"
+  (mouseenter)="openPanel()"
+  (mouseleave)="scheduleClose()"
+  (focusin)="openPanel()"
+  (focusout)="scheduleClose()">
+  <ng-content></ng-content>
+</div>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOpen]="isOpen()"
+  [cdkConnectedOverlayOrigin]="origin"
+  [cdkConnectedOverlayPositions]="overlayPositions"
+  [cdkConnectedOverlayPush]="true"
+  (detach)="closeImmediately()">
+  <article
+    class="user-panel"
+    (mouseenter)="cancelClose()"
+    (mouseleave)="scheduleClose()">
+    @if (displayUser(); as user) {
+      <div class="panel-top">
+        @if (user.profilePictureUrl) {
+          <img [src]="user.profilePictureUrl" [alt]="user.userName + ' profile picture'" class="avatar" />
+        } @else {
+          <div class="avatar fallback">{{ profileInitials() }}</div>
+        }
+
+        <div class="identity-copy">
+          <p class="eyebrow">Creator Snapshot</p>
+          <h3>{{ user.userName }}</h3>
+
+          @if (user.email) {
+            <p class="meta-line">{{ user.email }}</p>
+          } @else {
+            <p class="meta-line">Hover card preview</p>
+          }
+        </div>
+      </div>
+
+      @if (displayRoles().length > 0) {
+        <div class="pill-row">
+          @for (role of displayRoles(); track role) {
+            <span class="pill">{{ role }}</span>
+          }
+        </div>
+      }
+
+      <div class="stats-grid">
+        <div>
+          <span>Projects</span>
+          <strong>{{ projectCount() }}</strong>
+        </div>
+
+        <div>
+          <span>Followers</span>
+          <strong>{{ followerCount() }}</strong>
+        </div>
+
+        <div>
+          <span>Following</span>
+          <strong>{{ followingCount() }}</strong>
+        </div>
+      </div>
+
+      @if (isLoading()) {
+        <p class="panel-note">Loading more details...</p>
+      } @else if (error()) {
+        <p class="panel-note">{{ error() }}</p>
+      } @else {
+        <p class="panel-note">Open the full profile for the complete activity view.</p>
+      }
+
+      <div class="panel-actions">
+        @if (canFollow()) {
+          <button
+            type="button"
+            class="follow-btn"
+            [class.following]="isFollowing()"
+            [disabled]="isFollowPending()"
+            (click)="toggleFollow()">
+            {{
+              isFollowPending()
+                ? 'Updating...'
+                : (isFollowing() ? 'Following' : 'Follow')
+            }}
+          </button>
+        } @else if (shouldPromptFollowSignIn()) {
+          <a class="follow-btn following" [routerLink]="['/auth/login']">Sign in to Follow</a>
+        }
+
+        <a class="profile-link" [routerLink]="profileLink()">View profile</a>
+      </div>
+
+      @if (followError()) {
+        <p class="panel-note error-note">{{ followError() }}</p>
+      }
+    } @else {
+      <div class="empty-state">
+        <p class="eyebrow">Creator Snapshot</p>
+        <h3>User unavailable</h3>
+        <p class="panel-note">We do not have enough data to show this preview yet.</p>
+      </div>
+    }
+  </article>
+</ng-template>

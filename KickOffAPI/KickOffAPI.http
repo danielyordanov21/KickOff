@@ -1,0 +1,6 @@
+@KickOffAPI_HostAddress = http://localhost:5001
+
+GET {{KickOffAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

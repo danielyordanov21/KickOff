@@ -1,0 +1,16 @@
+<article class="metric-card" [class.interactive]="interactive()" [class.active]="expanded()">
+  @if (interactive()) {
+    <button type="button" class="metric-surface interactive-surface" (click)="handlePress()">
+      <span class="metric-label">{{ label() }}</span>
+      <strong>{{ value() }}</strong>
+      <p>{{ description() }}</p>
+      <small>{{ toggleLabel() }}</small>
+    </button>
+  } @else {
+    <div class="metric-surface">
+      <span class="metric-label">{{ label() }}</span>
+      <strong>{{ value() }}</strong>
+      <p>{{ description() }}</p>
+    </div>
+  }
+</article>

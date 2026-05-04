@@ -1,0 +1,29 @@
+<div class="landing-hero">
+    <h1>KickOff</h1>
+    <p class="subtitle">Find projects. Follow people. Launch ideas.</p>
+
+    <div class="cta">
+        @if (authState.isLoading()) {
+        <p>Loading...</p>
+        } @else {
+        @if (authState.currentUser()) {
+        <div>
+            <p class="welcome">Welcome back, {{ authState.currentUser()?.userName }}</p>
+            <div class="actions">
+                <a class="btn secondary" [routerLink]="['/profile','self']">View Profile</a>
+                <a class="btn secondary" [routerLink]="['/']">Browse Projects</a>
+            </div>
+            <a class="btn tertiary" (click)="logout()">Logout</a>
+        </div>
+        } @else {
+        <div class="auth">
+            <a class="btn" [routerLink]="['/auth','login']">Log in</a>
+            <a class="btn" [routerLink]="['/auth','register']">Register</a>
+        </div>
+        <div class="browse">
+            <a class="btn secondary" [routerLink]="['/']">Browse Projects</a>
+        </div>
+        }
+        }
+    </div>
+</div>

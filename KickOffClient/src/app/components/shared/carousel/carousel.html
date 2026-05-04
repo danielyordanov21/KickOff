@@ -1,0 +1,38 @@
+<div class="carousel-shell" [class.image-mode]="isImageCarousel()">
+  @if (isImageCarousel()) {
+    <p-carousel
+      [value]="images()"
+      [numVisible]="1"
+      [numScroll]="1"
+      [circular]="false"
+      [showIndicators]="showImageControls()"
+      [showNavigators]="showImageControls()"
+      styleClass="shared-carousel shared-carousel-images">
+      <ng-template let-image #item>
+        <figure class="image-slide">
+          <img
+            [src]="image"
+            [alt]="imageAltLabel() + ' image'"
+            class="image-slide-media"
+            loading="lazy"
+            decoding="async" />
+        </figure>
+      </ng-template>
+    </p-carousel>
+  } @else {
+    <p-carousel
+      [value]="featuredProjects()"
+      [numVisible]="projectNumVisible()"
+      [numScroll]="projectNumScroll()"
+      [circular]="false"
+      [responsiveOptions]="projectResponsiveOptions()"
+      [showIndicators]="showProjectControls()"
+      [showNavigators]="showProjectControls()"
+      autoplayInterval="4000"
+      styleClass="shared-carousel shared-carousel-projects">
+      <ng-template let-product #item>
+        <project-card [project]="product"></project-card>
+      </ng-template>
+    </p-carousel>
+  }
+</div>

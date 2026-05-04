@@ -1,0 +1,71 @@
+:host {
+  display: block;
+}
+
+.metric-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding: 1rem;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.04);
+
+  &.interactive {
+    border: 1px solid transparent;
+    transition: border-color 0.18s ease, background-color 0.18s ease, transform 0.18s ease;
+
+    &:hover {
+      border-color: rgba(156, 245, 240, 0.22);
+      background: rgba(255, 255, 255, 0.06);
+      transform: translateY(-1px);
+    }
+  }
+
+  &.active {
+    border-color: rgba(156, 245, 240, 0.22);
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .metric-surface {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+
+    .metric-label {
+      color: #86dfdc;
+      font-size: 0.76rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    strong {
+      margin: 0;
+      color: #fff;
+      font-size: 1.6rem;
+    }
+
+    p {
+      margin: 0;
+      color: rgba(231, 251, 251, 0.72);
+      line-height: 1.55;
+    }
+
+    small {
+      margin-top: 0.35rem;
+      color: rgba(162, 255, 245, 0.76);
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+  }
+
+  .interactive-surface {
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+}

@@ -1,0 +1,564 @@
+<main class="project-view-shell">
+  @if (isLoading()) {
+    <section class="state-card">
+      <p class="eyebrow">Project</p>
+      <h1 class="wrap-anywhere">Loading project details...</h1>
+      <p class="supporting-copy wrap-anywhere">Pulling the latest story, contacts, media, and project status.</p>
+    </section>
+  } @else if (loadError()) {
+    <section class="state-card error">
+      <p class="eyebrow">Project</p>
+      <h1 class="wrap-anywhere">Unable to load this project</h1>
+      <p class="supporting-copy wrap-anywhere">{{ loadError() }}</p>
+    </section>
+  } @else if (project(); as activeProject) {
+    <section class="hero-card">
+      <div class="hero-copy">
+        <div class="hero-heading">
+          <p class="eyebrow">Project Spotlight</p>
+
+          <div class="badge-row">
+            <span class="pill accent wrap-anywhere">{{ activeProject.state | titlecase }}</span>
+
+            @if (activeProject.category) {
+              <span class="pill wrap-anywhere">{{ activeProject.category }}</span>
+            }
+
+            @if (displayEndDate) {
+              <span class="pill muted wrap-anywhere">Ends {{ displayEndDate | date: 'mediumDate' }}</span>
+            } @else if (displayStartDate) {
+              <span class="pill muted wrap-anywhere">Started {{ displayStartDate | date: 'mediumDate' }}</span>
+            }
+          </div>
+        </div>
+
+        <h1 class="wrap-anywhere">{{ activeProject.name }}</h1>
+        @if (activeProject.headline) {
+          <p class="headline wrap-anywhere">{{ activeProject.headline }}</p>
+        }
+
+        <p class="supporting-copy wrap-anywhere">{{ activeProject.description }}</p>
+
+        <div class="hero-metrics">
+          <article>
+            <span class="metric-label">Owner</span>
+            <strong class="wrap-anywhere">{{ activeProject.owner }}</strong>
+          </article>
+
+          <article>
+            <span class="metric-label">Media Assets</span>
+            <strong>{{ publishedAssetCount }}</strong>
+          </article>
+
+          <article>
+            <span class="metric-label">Collaborators</span>
+            <strong>{{ collaborators.length }}</strong>
+          </article>
+
+          <article>
+            <span class="metric-label">Followers</span>
+            <strong>{{ followersCount }}</strong>
+          </article>
+
+          <article>
+            <span class="metric-label">{{ showFunding ? 'Funding Target' : 'Backers' }}</span>
+            @if (showFunding) {
+              <strong>{{ activeProject.financialGoal | currency }}</strong>
+            } @else {
+              <strong>{{ backerIds.length }}</strong>
+            }
+          </article>
+        </div>
+
+        <div class="hero-actions">
+          @if (canEditProject) {
+            <button type="button" class="primary-btn" (click)="goToEditProject()">Project Settings</button>
+          }
+
+          @if (canFollowProject) {
+            <button
+              type="button"
+              class="primary-btn"
+              [class.ghost-btn]="isFollowingProject"
+              [disabled]="isFollowPending() || isSavingFollowPreferences()"
+              (click)="toggleProjectFollow()">
+              {{
+                isFollowPending()
+                  ? (isFollowingProject ? 'Updating...' : 'Following...')
+                  : (isFollowingProject ? 'Following Project' : 'Follow Project')
+              }}
+            </button>
+          } @else if (shouldPromptFollowSignIn) {
+            <a class="ghost-btn" [routerLink]="['/auth', 'login']">Sign in to Follow</a>
+          }
+
+          @if (primaryContact && !isCurrentUserOwner) {
+            <a class="ghost-btn" [href]="formatContactLink(primaryContact)" target="_blank" rel="noreferrer">
+              Contact Project
+            </a>
+          }
+
+          @if (ownerChatLink) {
+            <a class="ghost-btn" [routerLink]="ownerChatLink" [queryParams]="ownerChatQueryParams">Contact Owner</a>
+          }
+
+          @if (isCurrentUserOwner) {
+            <span class="ownership-chip">You own this project</span>
+          }
+        </div>
+
+        @if (isFollowingProject) {
+          <section class="follow-preferences">
+            <div class="follow-preferences-copy">
+              <p class="eyebrow">Project Alerts</p>
+              <p class="supporting-copy compact">
+                Pick how KickOff should keep you posted when the owner publishes a new progress update.
+              </p>
+            </div>
+
+            <div class="follow-toggle-list">
+              <label class="follow-toggle">
+                <input
+                  type="checkbox"
+                  [checked]="followState.receiveInAppNotifications"
+                  [disabled]="isSavingFollowPreferences()"
+                  (change)="updateInAppFollowPreference($any($event.target).checked)" />
+                <span>
+                  <strong>In-app alerts</strong>
+                  <small>Show project updates in your KickOff alerts panel.</small>
+                </span>
+              </label>
+
+              <label class="follow-toggle">
+                <input
+                  type="checkbox"
+                  [checked]="followState.receiveEmailNotifications"
+                  [disabled]="isSavingFollowPreferences()"
+                  (change)="updateEmailFollowPreference($any($event.target).checked)" />
+                <span>
+                  <strong>Email updates</strong>
+                  <small>Send the update title and summary to your account email.</small>
+                </span>
+              </label>
+            </div>
+          </section>
+        }
+
+        @if (followMutationError()) {
+          <p class="mutation-error">{{ followMutationError() }}</p>
+        }
+      </div>
+
+      <div class="hero-media">
+        @if (galleryImages.length > 0) {
+          <div class="hero-carousel">
+            <carousel [images]="galleryImages" [imageAltLabel]="activeProject.name"></carousel>
+          </div>
+        } @else {
+          <div class="hero-image fallback">
+            <span>No project image yet</span>
+          </div>
+        }
+
+        <div class="media-note">
+          <p class="eyebrow">Momentum</p>
+          <p class="wrap-anywhere">{{ projectTeamSummary }}</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="detail-grid">
+      <article class="detail-card story-card">
+        <div class="section-heading">
+          <p class="eyebrow">Core Story</p>
+          <h2>What this project is building</h2>
+        </div>
+
+        <div class="content-stack">
+          <div>
+            <h3>Goal</h3>
+            <p class="wrap-anywhere">{{ activeProject.goal }}</p>
+          </div>
+
+          @if (activeProject.problem) {
+            <div>
+              <h3>Problem</h3>
+              <p class="wrap-anywhere">{{ activeProject.problem }}</p>
+            </div>
+          }
+
+          @if (activeProject.extraInfo) {
+            <div>
+              <h3>Additional Context</h3>
+              <p class="wrap-anywhere">{{ activeProject.extraInfo }}</p>
+            </div>
+          }
+        </div>
+      </article>
+
+      <article class="detail-card pulse-card">
+        <div class="section-heading">
+          <p class="eyebrow">Project Pulse</p>
+          <h2>What people should know fast</h2>
+        </div>
+
+        <dl class="meta-list pulse-list">
+          <div>
+            <dt>Current state</dt>
+            <dd class="wrap-anywhere">{{ activeProject.state | titlecase }}</dd>
+          </div>
+
+          <div>
+            <dt>Category</dt>
+            <dd class="wrap-anywhere">{{ activeProject.category ?? 'Not categorized yet' }}</dd>
+          </div>
+
+          <div>
+            <dt>Timeline</dt>
+            <dd class="wrap-anywhere">
+              @if (displayStartDate && displayEndDate) {
+                {{ displayStartDate | date: 'mediumDate' }} to {{ displayEndDate | date: 'mediumDate' }}
+              } @else if (displayEndDate) {
+                Ends {{ displayEndDate | date: 'mediumDate' }}
+              } @else if (displayStartDate) {
+                Started {{ displayStartDate | date: 'mediumDate' }}
+              } @else {
+                Timeline not published yet
+              }
+            </dd>
+          </div>
+
+          <div>
+            <dt>Contact options</dt>
+            <dd class="wrap-anywhere">{{ contacts.length > 0 ? contacts.length + ' shared' : 'Not shared yet' }}</dd>
+          </div>
+        </dl>
+
+        <p class="supporting-copy compact wrap-anywhere">{{ projectMomentumCopy }}</p>
+      </article>
+
+      <article class="detail-card updates-card">
+        <div class="section-heading section-heading-wide">
+          <div>
+            <p class="eyebrow">Creator Updates</p>
+            <h2>Announcements and progress from the project owner</h2>
+          </div>
+
+          <p class="supporting-copy compact">
+            @if (hasUpdates) {
+              {{ updates.length }} {{ updates.length === 1 ? 'update is' : 'updates are' }} published so far.
+            } @else {
+              No creator updates have been published yet.
+            }
+          </p>
+        </div>
+
+        @if (canEditProject) {
+          <section class="update-composer">
+            <label class="field-stack">
+              <span class="metric-label">Update title</span>
+              <input
+                type="text"
+                class="text-input"
+                maxlength="120"
+                [(ngModel)]="newUpdateTitle"
+                name="newUpdateTitle"
+                placeholder="What changed since the last update?" />
+            </label>
+
+            <label class="field-stack">
+              <span class="metric-label">Announcement</span>
+              <textarea
+                class="text-area"
+                maxlength="4000"
+                rows="5"
+                [(ngModel)]="newUpdateContent"
+                name="newUpdateContent"
+                placeholder="Share progress, blockers, milestones, or what supporters should know next."></textarea>
+            </label>
+
+            <div class="update-action-row">
+              <button type="button" class="primary-btn" (click)="publishUpdate()" [disabled]="isCreatingUpdate()">
+                {{ isCreatingUpdate() ? 'Publishing...' : 'Publish update' }}
+              </button>
+            </div>
+          </section>
+        }
+
+        @if (updateMutationError()) {
+          <p class="mutation-error">{{ updateMutationError() }}</p>
+        }
+
+        @if (hasUpdates) {
+          <div class="updates-list">
+            @for (update of updates; track trackProjectUpdate($index, update)) {
+              <article class="update-entry">
+                <div class="update-heading">
+                  <div>
+                    @if (isEditingUpdate(update.id)) {
+                      <label class="field-stack">
+                        <span class="metric-label">Title</span>
+                        <input
+                          type="text"
+                          class="text-input"
+                          maxlength="120"
+                          [(ngModel)]="editUpdateTitle"
+                          [name]="'editUpdateTitle-' + update.id" />
+                      </label>
+                    } @else {
+                      <h3 class="wrap-anywhere">{{ update.title }}</h3>
+                    }
+
+                    <p class="update-meta wrap-anywhere">
+                      <span>By {{ update.authorName }}</span>
+                      <span>{{ update.createdAt | date: 'medium' }}</span>
+                      @if (update.isEdited) {
+                        <span class="edited-badge">Edited</span>
+                      }
+                    </p>
+                  </div>
+
+                  @if (canEditProject) {
+                    <div class="inline-actions">
+                      @if (isEditingUpdate(update.id)) {
+                        <button
+                          type="button"
+                          class="ghost-btn inline-btn"
+                          (click)="saveEditedUpdate(update.id)"
+                          [disabled]="isSavingEditedUpdate()">
+                          {{ isSavingEditedUpdate() ? 'Saving...' : 'Save' }}
+                        </button>
+                        <button
+                          type="button"
+                          class="ghost-btn inline-btn"
+                          (click)="cancelEditingUpdate()"
+                          [disabled]="isSavingEditedUpdate()">
+                          Cancel
+                        </button>
+                      } @else {
+                        <button
+                          type="button"
+                          class="ghost-btn inline-btn"
+                          (click)="startEditingUpdate(update)"
+                          [disabled]="!!deletingUpdateId()">
+                          Edit
+                        </button>
+                        <button
+                          type="button"
+                          class="ghost-btn inline-btn danger-btn"
+                          (click)="deleteUpdate(update.id)"
+                          [disabled]="deletingUpdateId() === update.id">
+                          {{ deletingUpdateId() === update.id ? 'Deleting...' : 'Delete' }}
+                        </button>
+                      }
+                    </div>
+                  }
+                </div>
+
+                @if (isEditingUpdate(update.id)) {
+                  <label class="field-stack">
+                    <span class="metric-label">Update body</span>
+                    <textarea
+                      class="text-area"
+                      maxlength="4000"
+                      rows="6"
+                      [(ngModel)]="editUpdateContent"
+                      [name]="'editUpdateContent-' + update.id"></textarea>
+                  </label>
+                } @else {
+                  <p class="update-content wrap-anywhere">{{ update.content }}</p>
+                }
+              </article>
+            }
+          </div>
+        } @else {
+          <div class="empty-inline-state">
+            <span>
+              {{
+                canEditProject
+                  ? 'Publish the first update to give supporters and visitors a clearer sense of progress.'
+                  : 'Check back later for creator announcements and milestone updates.'
+              }}
+            </span>
+          </div>
+        }
+      </article>
+
+      @if (tags.length > 0) {
+        <article class="detail-card">
+          <div class="section-heading">
+            <p class="eyebrow">Signals</p>
+            <h2>Tags</h2>
+          </div>
+
+          <div class="chip-row">
+            @for (tag of tags; track trackByValue($index, tag)) {
+              <span class="chip wrap-anywhere">{{ tag }}</span>
+            }
+          </div>
+        </article>
+      }
+
+      <article class="detail-card team-card">
+        <div class="section-heading">
+          <p class="eyebrow">Team Signals</p>
+          <h2>Who is already around it</h2>
+        </div>
+
+        <div class="team-grid">
+          <article class="signal-card">
+            <span class="metric-label">Collaborators</span>
+            <strong>{{ collaborators.length }}</strong>
+            <p>
+              {{
+                collaborators.length > 0
+                  ? 'Execution partners are already attached.'
+                  : 'No collaborators have been listed publicly yet.'
+              }}
+            </p>
+          </article>
+
+          <article class="signal-card">
+            <span class="metric-label">Backers</span>
+            <strong>{{ backerIds.length }}</strong>
+            <p>
+              {{
+                backerIds.length > 0
+                  ? 'Supporters are already signaling belief in the project.'
+                  : 'No backers are listed yet.'
+              }}
+            </p>
+          </article>
+        </div>
+
+        <p class="supporting-copy compact wrap-anywhere">{{ projectTeamSummary }}</p>
+      </article>
+
+      <article class="detail-card">
+        <div class="section-heading">
+          <p class="eyebrow">Reach Out</p>
+          <h2>Contacts</h2>
+        </div>
+
+        <p class="section-copy wrap-anywhere">{{ contactSummary }}</p>
+
+        @if (contacts.length > 0) {
+          <div class="list-stack">
+            @for (contact of contacts; track trackByValue($index, contact)) {
+              <a class="contact-link" [href]="formatContactLink(contact)" target="_blank" rel="noreferrer">
+                {{ contact }}
+              </a>
+            }
+          </div>
+        } @else {
+          <div class="empty-inline-state">
+            <span>Check back later for a published contact path.</span>
+          </div>
+        }
+      </article>
+
+      <article class="detail-card operations-card">
+        <div class="section-heading">
+          <p class="eyebrow">Operations</p>
+          <h2>Timing and publishing details</h2>
+        </div>
+
+        <dl class="meta-list">
+          <div>
+            <dt>Started</dt>
+            <dd>{{ displayStartDate ? (displayStartDate | date: 'mediumDate') : 'Not published' }}</dd>
+          </div>
+
+          <div>
+            <dt>Ends</dt>
+            <dd>{{ displayEndDate ? (displayEndDate | date: 'medium') : 'No end date set' }}</dd>
+          </div>
+
+          <div>
+            <dt>Gallery assets</dt>
+            <dd>{{ publishedAssetCount }}</dd>
+          </div>
+
+          <div>
+            <dt>Published contacts</dt>
+            <dd>{{ contacts.length }}</dd>
+          </div>
+        </dl>
+      </article>
+
+      @if (showInternalReferences) {
+        <article class="detail-card internal-card">
+          <div class="section-heading">
+            <p class="eyebrow">Owner View</p>
+            <h2>Internal references</h2>
+          </div>
+
+          @if (showSettingsId) {
+            <div class="internal-group">
+              <span class="metric-label">Settings ID</span>
+              <div class="mono-chip-row">
+                <span class="mono-chip">{{ activeProject.settingsId }}</span>
+              </div>
+            </div>
+          }
+
+          @if (collaborators.length > 0) {
+            <div class="internal-group">
+              <span class="metric-label">Collaborator IDs</span>
+              <div class="mono-chip-row">
+                @for (collaborator of collaborators; track trackByValue($index, collaborator)) {
+                  <span class="mono-chip">{{ collaborator }}</span>
+                }
+              </div>
+            </div>
+          }
+
+          @if (backerIds.length > 0) {
+            <div class="internal-group">
+              <span class="metric-label">Backer IDs</span>
+              <div class="mono-chip-row">
+                @for (backerId of backerIds; track trackByValue($index, backerId)) {
+                  <span class="mono-chip">{{ backerId }}</span>
+                }
+              </div>
+            </div>
+          }
+        </article>
+      }
+    </section>
+
+    <section class="detail-card recommendations-card">
+      <div class="section-heading section-heading-wide">
+        <div>
+          <p class="eyebrow">Recommended</p>
+          <h2>Other projects worth a look</h2>
+        </div>
+
+        <p class="section-copy">
+          A short rail of nearby projects to keep exploring after this one.
+        </p>
+      </div>
+
+      @if (recommendationsLoading()) {
+        <div class="empty-inline-state">
+          <span>Loading a few more projects...</span>
+        </div>
+      } @else if (recommendedProjects().length > 0) {
+        <carousel
+          [featuredProjects]="recommendedProjects()"
+          [projectNumVisible]="4"
+          [projectResponsiveOptions]="recommendationResponsiveOptions"></carousel>
+      } @else {
+        <div class="empty-inline-state">
+          <span>No other projects are ready to recommend yet.</span>
+        </div>
+      }
+    </section>
+  } @else {
+    <section class="state-card error">
+      <p class="eyebrow">Project</p>
+      <h1 class="wrap-anywhere">This is really bad</h1>
+      <p class="supporting-copy wrap-anywhere">{{ loadError() }}</p>
+    </section>
+  }
+</main>
