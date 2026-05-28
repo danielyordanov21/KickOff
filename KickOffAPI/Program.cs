@@ -6,9 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
 using System.Data;
-using System.Security.Claims;
 using System.Text;
 
 const string HttpsOpenCorsPolicy = "HttpsOpenCorsPolicy";
@@ -115,7 +113,7 @@ builder.Services.Configure<ProjectNotificationOptions>(
     configuration.GetSection("ProjectNotifications"));
 builder.Services.Configure<ProductionBootstrapOptions>(
     configuration.GetSection("ProductionBootstrap"));
-builder.Services.AddHttpClient<KickOffAPI.Services.SendbirdService>();
+builder.Services.AddHttpClient<SendbirdService>();
 
 // Services
 builder.Services.AddOpenApi();
@@ -133,7 +131,6 @@ builder.Services.AddCors(options =>
     });
 });
 
-// In-memory distributed cache for development. Swap for Redis in production.
 builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddScoped(typeof(IBaseRepository<,>), typeof(BaseRepository<,>));
@@ -147,10 +144,10 @@ builder.Services.AddScoped<ProjectService>();
 builder.Services.AddScoped<ProjectFollowService>();
 builder.Services.AddScoped<ProjectNotificationService>();
 builder.Services.AddScoped<ClientAppUrlResolver>();
-builder.Services.AddScoped<KickOffAPI.Services.UserService>();
+builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<IUserFollowService, UserFollowService>();
 builder.Services.AddScoped<IEmailService, SmtpEmailService>();
-builder.Services.AddScoped<KickOffAPI.Services.CacheService>();
+builder.Services.AddScoped<CacheService>();
 builder.Services.AddScoped<BlobService>();
 
 var app = builder.Build();
